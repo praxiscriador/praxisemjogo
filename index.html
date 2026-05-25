@@ -331,6 +331,32 @@ textarea.locked:focus { border-color: #FECACA; background: #FEF2F2; }
 }
 .avaliador-select:focus { outline: none; border-color: var(--blue-m); }
 
+.nome-grupo-wrap {
+  display: flex; align-items: center; gap: .5rem;
+  background: var(--blue-l); border-radius: 10px;
+  padding: .5rem .8rem; margin-bottom: .8rem;
+  border: 1.5px solid var(--blue-m);
+}
+.nome-grupo-wrap label {
+  font-size: .7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--blue); white-space: nowrap;
+}
+.nome-grupo-input {
+  flex: 1; border: none; background: transparent;
+  font-family: 'DM Sans', sans-serif; font-size: .88rem;
+  color: var(--ink); font-weight: 600;
+  outline: none;
+}
+.nome-grupo-input::placeholder { color: var(--muted); font-weight: 400; }
+
+.lock-banner-instrucional {
+  background: #EFF6FF; border: 1.5px solid #BFDBFE;
+  border-radius: 10px; padding: .7rem 1rem;
+  font-size: .8rem; color: #1D4ED8; font-weight: 500;
+  margin-bottom: .6rem; line-height: 1.5;
+}
+.lock-banner-instrucional strong { display: block; font-size: .82rem; margin-bottom: .2rem; }
+
 .save-btn {
   background: var(--blue); color: #fff; border: none;
   border-radius: 10px; padding: .55rem 1.2rem;
@@ -537,8 +563,10 @@ footer {
   <div class="container">
     <div class="qr-section">
       <h2>📲 QR Code de Acesso</h2>
+      <p>Imprima e cole na mesa central. Qualquer participante escaneia para acessar este hub.</p>
       <canvas id="qr-canvas" width="220" height="220"></canvas>
       <div class="qr-url-box" id="qr-url-text">Carregando URL...</div>
+      <p class="qr-hint">💡 Para usar em sala: hospede este arquivo em qualquer servidor ou Google Drive público e atualize o link acima.</p>
       <button onclick="downloadQR()" style="margin-top:1rem;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:.6rem 1.4rem;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;">⬇ Baixar QR Code</button>
     </div>
   </div>
@@ -670,11 +698,16 @@ function changeGrupos(delta) {
   buildGrupos();
 }
 
+function nomeGrupo(i) {
+  const d = gruposData[i];
+  return (d && d.nome && d.nome.trim()) ? d.nome.trim() : `Grupo ${i}`;
+}
+
 function buildGrupos() {
   const container = document.getElementById('grupos-container');
   container.innerHTML = '';
   for (let i = 1; i <= numGrupos; i++) {
-    if (!gruposData[i]) gruposData[i] = { proposta: '', avaliador: '', avaliacao: '' };
+    if (!gruposData[i]) gruposData[i] = { nome: '', proposta: '', avaliador: '', avaliacao: '' };
     container.appendChild(makeGrupoCard(i));
   }
 }
@@ -685,10 +718,13 @@ function makeGrupoCard(i) {
   div.className = 'grupo-card';
   div.id = 'grupo-card-' + i;
 
-  // build avaliador options
+  // build avaliador options usando nomes
   let opts = '<option value="">— Selecione o grupo avaliador —</option>';
   for (let j = 1; j <= numGrupos; j++) {
-    if (j !== i) opts += `<option value="${j}" ${d.avaliador==j?'selected':''}> Grupo ${j} avaliará este espaço</option>`;
+    if (j !== i) {
+      const label = nomeGrupo(j);
+      opts += `<option value="${j}" ${d.avaliador==j?'selected':''}>${label} avaliará este espaço</option>`;
+    }
   }
 
   const propLen  = (d.proposta||'').length;
@@ -697,16 +733,27 @@ function makeGrupoCard(i) {
   const avalClass = avalLen > MAX_AVAL     ? 'over' : avalLen > MAX_AVAL*0.85     ? 'near' : '';
 
   const locked = d.avaliador ? true : false;
+  const nomeAvaliador = d.avaliador ? nomeGrupo(Number(d.avaliador)) : '';
+  const nomeAtual = nomeGrupo(i);
 
   div.innerHTML = `
     <div class="grupo-header">
-      <h3>Grupo ${i}</h3>
+      <h3>Grupo ${i}${d.nome && d.nome.trim() ? ' — ' + d.nome.trim() : ''}</h3>
       <span class="char-info">Ato 2: máx ${MAX_PROPOSTA} · Ato 3: máx ${MAX_AVAL}</span>
     </div>
     <div class="grupo-body">
+
+      <div class="nome-grupo-wrap">
+        <label for="nome-${i}">🏷 Nome do grupo:</label>
+        <input class="nome-grupo-input" id="nome-${i}" type="text" maxlength="40"
+          placeholder="Ex: Os Ludens, Equipe Alpha…"
+          value="${d.nome||''}"
+          oninput="updateNome(${i}, this.value)" />
+      </div>
+
       <div class="field-block">
         <div class="field-label">
-          <span>✍️ ATO 2 — Proposta Pedagógica <em style="font-weight:400;color:var(--muted)">(Grupo ${i} preenche)</em></span>
+          <span>✍️ ATO 2 — Proposta Pedagógica <em style="font-weight:400;color:var(--muted)">(${nomeAtual} preenche)</em></span>
           <span class="char-count ${propClass}" id="prop-count-${i}">${propLen}/${MAX_PROPOSTA}</span>
         </div>
         <textarea id="proposta-${i}" maxlength="${MAX_PROPOSTA}" rows="5"
@@ -719,14 +766,19 @@ function makeGrupoCard(i) {
           🔒 ATO 3 — Contracorrente Avaliativa
         </div>
         <select class="avaliador-select" onchange="updateAvaliador(${i}, this.value)">${opts}</select>
-        ${locked ? `<div class="lock-banner">🚫 PARE — Este espaço é exclusivo para o <strong>Grupo ${d.avaliador}</strong> preencher durante o Ato 3. Grupo ${i}: não edite aqui.</div>` : ''}
+        ${locked ? `
+          <div class="lock-banner">🚫 PARE — Este espaço é exclusivo para <strong>${nomeAvaliador}</strong> preencher durante o Ato 3. ${nomeAtual}: não edite aqui.</div>
+          <div class="lock-banner-instrucional">
+            <strong>📢 Instrução para o Ato 3:</strong>
+            ${nomeAvaliador}: desloque-se até o espaço do <strong>${nomeAtual}</strong>, leia a proposta acima e preencha a avaliação abaixo aplicando os 2 critérios da Cartilha Teórica.
+          </div>` : ''}
         <div class="field-label">
-          <span>Avaliação <em style="font-weight:400;color:var(--muted)">(Grupo avaliador preenche)</em></span>
+          <span>Avaliação <em style="font-weight:400;color:var(--muted)">(${locked ? nomeAvaliador : 'grupo avaliador'} preenche)</em></span>
           <span class="char-count ${avalClass}" id="aval-count-${i}">${avalLen}/${MAX_AVAL}</span>
         </div>
         <textarea id="avaliacao-${i}" maxlength="${MAX_AVAL}" rows="4"
           class="${locked ? 'locked' : ''}"
-          ${locked ? 'readonly placeholder="Aguardando o Grupo avaliador..."' : `placeholder="Aplique os 2 critérios da Cartilha Teórica. A proposta gerou ludicidade autêntica? A tecnologia foi crítica ou instrumental? Máx. ${MAX_AVAL} caracteres."`}
+          ${locked ? `readonly placeholder="Aguardando ${nomeAvaliador} preencher..."` : `placeholder="Aplique os 2 critérios da Cartilha Teórica. A proposta gerou ludicidade autêntica? A tecnologia foi crítica ou instrumental? Máx. ${MAX_AVAL} caracteres."`}
           oninput="updateField(${i},'avaliacao',this.value)">${d.avaliacao}</textarea>
       </div>
 
@@ -736,6 +788,15 @@ function makeGrupoCard(i) {
       </div>
     </div>`;
   return div;
+}
+
+function updateNome(i, val) {
+  gruposData[i].nome = val;
+  // re-render all cards so dropdown labels update everywhere
+  buildGrupos();
+  // restore focus to the nome input that triggered the change
+  const el = document.getElementById('nome-' + i);
+  if (el) { el.focus(); el.setSelectionRange(val.length, val.length); }
 }
 
 function updateField(i, field, val) {
@@ -749,9 +810,8 @@ function updateField(i, field, val) {
 
 function updateAvaliador(i, val) {
   gruposData[i].avaliador = val;
-  // re-render this card
-  const old = document.getElementById('grupo-card-' + i);
-  old.replaceWith(makeGrupoCard(i));
+  // re-render all cards so all dropdowns reflect updated state
+  buildGrupos();
 }
 
 function saveGrupo(i) {
