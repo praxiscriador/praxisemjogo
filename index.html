@@ -33,6 +33,43 @@ body {
   min-height: 100vh;
 }
 
+/* ── FIREBASE CONFIG BANNER ── */
+#firebase-config-banner {
+  background: #FEF3C7;
+  border-bottom: 2px solid #F59E0B;
+  padding: .8rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  font-size: .82rem;
+  color: #92400E;
+}
+#firebase-config-banner.hidden { display: none; }
+#firebase-config-banner strong { font-weight: 700; }
+#firebase-config-banner a { color: #1D4ED8; text-decoration: underline; cursor: pointer; }
+
+#sync-status {
+  position: fixed;
+  bottom: 1rem; right: 1rem;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 20px;
+  padding: .4rem 1rem;
+  font-size: .75rem;
+  font-weight: 600;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  transition: all .3s;
+  opacity: 0;
+  pointer-events: none;
+}
+#sync-status.show { opacity: 1; }
+#sync-status.error { background: var(--warn); }
+#sync-status.ok    { background: #22C55E; }
+
 /* ── NAV ── */
 nav {
   background: var(--blue);
@@ -323,6 +360,14 @@ textarea.locked:focus { border-color: #FECACA; background: #FEF2F2; }
   margin-bottom: .6rem;
 }
 
+.lock-banner-instrucional {
+  background: #EFF6FF; border: 1.5px solid #BFDBFE;
+  border-radius: 10px; padding: .7rem 1rem;
+  font-size: .8rem; color: #1D4ED8; font-weight: 500;
+  margin-bottom: .6rem; line-height: 1.5;
+}
+.lock-banner-instrucional strong { display: block; font-size: .82rem; margin-bottom: .2rem; }
+
 .avaliador-select {
   width: 100%; padding: .5rem .8rem; border-radius: 8px;
   border: 1.5px solid var(--border); font-family: 'DM Sans', sans-serif;
@@ -348,14 +393,6 @@ textarea.locked:focus { border-color: #FECACA; background: #FEF2F2; }
   outline: none;
 }
 .nome-grupo-input::placeholder { color: var(--muted); font-weight: 400; }
-
-.lock-banner-instrucional {
-  background: #EFF6FF; border: 1.5px solid #BFDBFE;
-  border-radius: 10px; padding: .7rem 1rem;
-  font-size: .8rem; color: #1D4ED8; font-weight: 500;
-  margin-bottom: .6rem; line-height: 1.5;
-}
-.lock-banner-instrucional strong { display: block; font-size: .82rem; margin-bottom: .2rem; }
 
 .save-btn {
   background: var(--blue); color: #fff; border: none;
@@ -392,9 +429,38 @@ footer {
   color: var(--muted); border-top: 1px solid var(--border);
   margin-top: 2rem;
 }
+
+/* ── LIVE BADGE ── */
+.live-badge {
+  display: inline-flex; align-items: center; gap: .3rem;
+  background: #DCFCE7; color: #166534; border-radius: 20px;
+  padding: .2rem .7rem; font-size: .7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: #22C55E;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+
+.offline-badge {
+  display: inline-flex; align-items: center; gap: .3rem;
+  background: #FEF3C7; color: #92400E; border-radius: 20px;
+  padding: .2rem .7rem; font-size: .7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+}
 </style>
 </head>
 <body>
+
+<!-- ══ BANNER: aparece enquanto Firebase não está configurado ══ -->
+<div id="firebase-config-banner">
+  ⚙️ <strong>Configure o Firebase:</strong> Edite as 6 linhas de configuração no início do &lt;script&gt; deste arquivo para ativar a sincronização em tempo real.
+  <a onclick="document.getElementById('firebase-config-banner').classList.add('hidden')">Fechar</a>
+</div>
+
+<!-- ══ STATUS de sync ══ -->
+<div id="sync-status">⟳ Sincronizando…</div>
 
 <nav>
   <div class="brand">Práxis em Jogo</div>
@@ -419,28 +485,28 @@ footer {
   </div>
   <div class="container">
     <div style="background:var(--white);border-radius:16px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:1.2rem;">
-      <h2 style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--blue);margin-bottom:1rem;">Os 4 Atos</h2>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;">
+        <h2 style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--blue);">Os 4 Atos</h2>
+        <div id="connection-badge" class="offline-badge">⚡ Modo local</div>
+      </div>
       <div style="display:flex;flex-direction:column;gap:.7rem;">
         <div style="display:flex;gap:1rem;align-items:flex-start;">
-          <div style="background:var(--blue);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;">1</div>
-          <div><div style="font-weight:600;font-size:.9rem;">Imersão no Dilema <span style="color:var(--muted);font-weight:400;font-size:.78rem;">· 5 min · Analógico</span></div><div style="font-size:.82rem;color:var(--muted);line-height:1.4;margin-top:.2rem;">O grupo lê a Carta de Cenário de Tensão física. Debate intenso — sem resposta óbvia.</div></div>
+          <div style="background:var(--blue);color:#fff;border-radius:8px;padding:.3rem .7rem;font-size:.75rem;font-weight:700;white-space:nowrap;">Ato 1</div>
+          <div><strong>Imersão no Dilema</strong> <span style="color:var(--muted);font-size:.85rem;">· 5 min · Analógico</span><br><span style="font-size:.82rem;color:var(--muted);">Leitura e discussão do dilema em grupo, sem dispositivos.</span></div>
         </div>
         <div style="display:flex;gap:1rem;align-items:flex-start;">
-          <div style="background:var(--green);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;">2</div>
-          <div><div style="font-weight:600;font-size:.9rem;">Autoria e Registro <span style="color:var(--muted);font-weight:400;font-size:.78rem;">· 5 min · Digital</span></div><div style="font-size:.82rem;color:var(--muted);line-height:1.4;margin-top:.2rem;">O grupo registra sua proposta pedagógica aqui. Síntese obrigatória — máx. 600 caracteres.</div></div>
+          <div style="background:var(--green);color:#fff;border-radius:8px;padding:.3rem .7rem;font-size:.75rem;font-weight:700;white-space:nowrap;">Ato 2</div>
+          <div><strong>Autoria e Registro</strong> <span style="color:var(--muted);font-size:.85rem;">· 5 min · Digital</span><br><span style="font-size:.82rem;color:var(--muted);">Cada grupo registra sua proposta pedagógica neste hub.</span></div>
         </div>
         <div style="display:flex;gap:1rem;align-items:flex-start;">
-          <div style="background:var(--orange);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;">3</div>
-          <div><div style="font-weight:600;font-size:.9rem;">Leitura Crítica da Prática <span style="color:var(--muted);font-weight:400;font-size:.78rem;">· 5 min · Híbrido</span></div><div style="font-size:.82rem;color:var(--muted);line-height:1.4;margin-top:.2rem;">O grupo avaliador acessa a aba Grupos, lê a proposta do outro e registra a contracorrente.</div></div>
+          <div style="background:var(--orange);color:#fff;border-radius:8px;padding:.3rem .7rem;font-size:.75rem;font-weight:700;white-space:nowrap;">Ato 3</div>
+          <div><strong>Leitura Crítica</strong> <span style="color:var(--muted);font-size:.85rem;">· 5 min · Híbrido</span><br><span style="font-size:.82rem;color:var(--muted);">Cada grupo lê e avalia a proposta do grupo designado.</span></div>
         </div>
         <div style="display:flex;gap:1rem;align-items:flex-start;">
-          <div style="background:var(--blue-m);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;">4</div>
-          <div><div style="font-weight:600;font-size:.9rem;">Práxis e Síntese <span style="color:var(--muted);font-weight:400;font-size:.78rem;">· 3 min · Oral</span></div><div style="font-size:.82rem;color:var(--muted);line-height:1.4;margin-top:.2rem;">O grupo proponente lê a crítica recebida e faz réplica oral explicitando o aprendizado.</div></div>
+          <div style="background:var(--blue-m);color:#fff;border-radius:8px;padding:.3rem .7rem;font-size:.75rem;font-weight:700;white-space:nowrap;">Ato 4</div>
+          <div><strong>Práxis e Síntese</strong> <span style="color:var(--muted);font-size:.85rem;">· 3 min · Oral</span><br><span style="font-size:.82rem;color:var(--muted);">Debate coletivo sobre as avaliações recebidas.</span></div>
         </div>
       </div>
-    </div>
-    <div style="background:var(--blue-l);border-left:4px solid var(--blue);border-radius:0 12px 12px 0;padding:1rem 1.2rem;font-size:.85rem;color:var(--blue);line-height:1.5;">
-      <strong>Lembre-se:</strong> O jogo não é o objetivo — é o dispositivo. A reflexão não antecede a ação nem a sucede: ela ocorre simultaneamente, no tensionamento entre o que o grupo propôs e o que o outro grupo desvelou.
     </div>
   </div>
 </div>
@@ -450,9 +516,7 @@ footer {
   <div class="container">
     <div class="timer-wrap">
       <h2>⏱ Cronômetro dos Atos</h2>
-      <div class="acts-grid" id="acts-grid">
-        <!-- generated by JS -->
-      </div>
+      <div class="acts-grid" id="acts-grid"></div>
       <div class="timer-display">
         <div class="t-label">ATO ATUAL</div>
         <div class="t-name" id="t-name">Selecione um ato acima</div>
@@ -480,7 +544,6 @@ footer {
       <p style="color:var(--muted);font-size:.88rem;margin-top:.3rem;">Use estes critérios para guiar a leitura crítica da proposta do outro grupo.</p>
     </div>
     <div class="criterios-grid">
-      <!-- Critério 1 -->
       <div class="criterio-card">
         <div class="criterio-header" style="background:var(--green);">
           <div class="c-num">Critério 1</div>
@@ -506,7 +569,6 @@ footer {
           </div>
         </div>
       </div>
-      <!-- Critério 2 -->
       <div class="criterio-card">
         <div class="criterio-header" style="background:var(--orange);">
           <div class="c-num">Critério 2</div>
@@ -547,11 +609,14 @@ footer {
         <h2>Espaço dos Grupos</h2>
         <p style="font-size:.82rem;color:var(--muted);margin-top:.2rem;">Ato 2: proposta · Ato 3: avaliação cruzada</p>
       </div>
-      <div class="num-grupos-ctrl">
-        <span style="font-size:.8rem;color:var(--muted);margin-right:.3rem;">Grupos:</span>
-        <button onclick="changeGrupos(-1)">−</button>
-        <span id="num-grupos-display">3</span>
-        <button onclick="changeGrupos(1)">+</button>
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <div id="grupos-sync-badge" class="offline-badge">⚡ Modo local</div>
+        <div class="num-grupos-ctrl">
+          <span style="font-size:.8rem;color:var(--muted);margin-right:.3rem;">Grupos:</span>
+          <button onclick="changeGrupos(-1)">−</button>
+          <span id="num-grupos-display">3</span>
+          <button onclick="changeGrupos(1)">+</button>
+        </div>
       </div>
     </div>
     <div id="grupos-container"></div>
@@ -563,8 +628,10 @@ footer {
   <div class="container">
     <div class="qr-section">
       <h2>📲 QR Code de Acesso</h2>
+      <p>Imprima e cole na mesa central. Qualquer participante escaneia para acessar este hub.</p>
       <canvas id="qr-canvas" width="220" height="220"></canvas>
       <div class="qr-url-box" id="qr-url-text">Carregando URL...</div>
+      <p class="qr-hint">💡 Para usar em sala: hospede este arquivo em qualquer servidor ou Google Drive público e atualize o link acima.</p>
       <button onclick="downloadQR()" style="margin-top:1rem;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:.6rem 1.4rem;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;">⬇ Baixar QR Code</button>
     </div>
   </div>
@@ -572,23 +639,71 @@ footer {
 
 <footer>Práxis em Jogo · Problema 10 — Ludicidade, Tecnologia e Ensino · Material de uso livre para fins pedagógicos</footer>
 
-<!-- QR Code lib -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
+<!-- Firebase SDK -->
+<script type="module">
+// ══════════════════════════════════════════════════════════
+//  🔧 COLE AQUI SUA CONFIGURAÇÃO DO FIREBASE
+//  Obtenha em: console.firebase.google.com → seu projeto
+//  → Configurações do projeto → Seus aplicativos → SDK
+// ══════════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyD5FjU9rG_gjV_qVxS2Qg6Fi13oDj5yb-I",
+  authDomain: "praxis-em-jogo.firebaseapp.com",
+  databaseURL: "https://praxis-em-jogo-default-rtdb.firebaseio.com",
+  projectId: "praxis-em-jogo",
+  storageBucket: "praxis-em-jogo.firebasestorage.app",
+  messagingSenderId: "204579870609",
+  appId: "1:204579870609:web:d1f7145ea3015e52346c30",
+  measurementId: "G-BQ8GDWRVFW"
+};
+// ══════════════════════════════════════════════════════════
+
+import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, update, set, get }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// ── detecta se config foi preenchida ──
+const configured = firebaseConfig.apiKey !== "COLE_AQUI";
+let db = null;
+
+if (configured) {
+  try {
+    const app = initializeApp(firebaseConfig);
+    db = getDatabase(app);
+    document.getElementById('firebase-config-banner').classList.add('hidden');
+    // atualiza badges
+    document.getElementById('connection-badge').className = 'live-badge';
+    document.getElementById('connection-badge').innerHTML = '<div class="live-dot"></div> Ao vivo';
+    document.getElementById('grupos-sync-badge').className = 'live-badge';
+    document.getElementById('grupos-sync-badge').innerHTML = '<div class="live-dot"></div> Sincronizado';
+  } catch(e) {
+    console.error('Firebase init error:', e);
+  }
+}
+
 // ══════════ NAV ══════════
-function showSection(id, btn) {
+window.showSection = function(id, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if (btn) btn.classList.add('active');
+};
+
+// ══════════ SYNC STATUS ══════════
+function showSync(msg, type = '') {
+  const el = document.getElementById('sync-status');
+  el.textContent = msg;
+  el.className = 'show ' + type;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.className = ''; }, 2500);
 }
 
 // ══════════ TIMER ══════════
 const ACTS = [
-  { num: 1, name: 'Imersão no Dilema',        secs: 300, mode: 'Analógico',  color: '#1F4E79' },
-  { num: 2, name: 'Autoria e Registro',        secs: 300, mode: 'Digital',    color: '#375623' },
-  { num: 3, name: 'Leitura Crítica',           secs: 300, mode: 'Híbrido',    color: '#7B2D00' },
-  { num: 4, name: 'Práxis e Síntese',          secs: 180, mode: 'Oral',       color: '#2E75B6' },
+  { num: 1, name: 'Imersão no Dilema',  secs: 300, mode: 'Analógico', color: '#1F4E79' },
+  { num: 2, name: 'Autoria e Registro', secs: 300, mode: 'Digital',   color: '#375623' },
+  { num: 3, name: 'Leitura Crítica',    secs: 300, mode: 'Híbrido',   color: '#7B2D00' },
+  { num: 4, name: 'Práxis e Síntese',   secs: 180, mode: 'Oral',      color: '#2E75B6' },
 ];
 
 let currentAct = null, remaining = 0, totalSecs = 0, timerInterval = null, running = false;
@@ -599,7 +714,6 @@ function buildActsGrid() {
   ACTS.forEach((a, i) => {
     const b = document.createElement('button');
     b.className = 'act-btn';
-    b.id = 'act-btn-' + i;
     b.innerHTML = `<div class="act-num">Ato ${a.num}</div>
       <div class="act-name">${a.name}</div>
       <div class="act-time">${Math.floor(a.secs/60)}:00</div>
@@ -626,7 +740,7 @@ function formatTime(s) {
   return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
 }
 
-function timerStart() {
+window.timerStart = function() {
   if (currentAct === null) { alert('Selecione um ato primeiro.'); return; }
   if (remaining <= 0) return;
   running = true;
@@ -642,13 +756,10 @@ function timerStart() {
     if (remaining <= 30) { clock.className = 't-clock urgent'; bar.style.background = '#F87171'; }
     else if (remaining <= 60) { bar.style.background = '#FBBF24'; }
     if (remaining <= 0) {
-      clearInterval(timerInterval);
-      running = false;
-      clock.className = 't-clock done';
-      clock.textContent = '00:00';
+      clearInterval(timerInterval); running = false;
+      clock.className = 't-clock done'; clock.textContent = '00:00';
       document.getElementById('btn-start').style.display = 'inline-flex';
       document.getElementById('btn-pause').style.display = 'none';
-      // beep
       try {
         const ctx = new AudioContext();
         [0,0.15,0.3].forEach(t => {
@@ -661,15 +772,15 @@ function timerStart() {
       } catch(e){}
     }
   }, 1000);
-}
+};
 
-function timerPause() {
+window.timerPause = function() {
   clearInterval(timerInterval); running = false;
   document.getElementById('btn-start').style.display = 'inline-flex';
   document.getElementById('btn-pause').style.display = 'none';
-}
+};
 
-function timerReset() {
+window.timerReset = function() {
   clearInterval(timerInterval); running = false;
   if (currentAct !== null) {
     remaining = ACTS[currentAct].secs;
@@ -680,7 +791,7 @@ function timerReset() {
   }
   document.getElementById('btn-start').style.display = 'inline-flex';
   document.getElementById('btn-pause').style.display = 'none';
-}
+};
 
 buildActsGrid();
 
@@ -689,23 +800,77 @@ let numGrupos = 3;
 const MAX_PROPOSTA = 600;
 const MAX_AVAL     = 500;
 const gruposData   = {};
-
-function changeGrupos(delta) {
-  numGrupos = Math.max(2, Math.min(6, numGrupos + delta));
-  document.getElementById('num-grupos-display').textContent = numGrupos;
-  buildGrupos();
-}
+let _remoteListener = null;
+let _suppressRemote = false; // evita loop: escrita local → evento remoto → reescrita
 
 function nomeGrupo(i) {
   const d = gruposData[i];
   return (d && d.nome && d.nome.trim()) ? d.nome.trim() : `Grupo ${i}`;
 }
 
+// ── Escuta o Firebase e atualiza UI quando outro dispositivo altera ──
+function startRemoteListener() {
+  if (!db) return;
+  if (_remoteListener) _remoteListener(); // cancela listener anterior
+  const r = ref(db, 'praxis/sessao');
+  _remoteListener = onValue(r, snap => {
+    if (_suppressRemote) return;
+    const data = snap.val();
+    if (!data) return;
+    // atualiza numGrupos se mudou remotamente
+    if (data.numGrupos && data.numGrupos !== numGrupos) {
+      numGrupos = data.numGrupos;
+      document.getElementById('num-grupos-display').textContent = numGrupos;
+    }
+    // atualiza dados dos grupos
+    if (data.grupos) {
+      Object.entries(data.grupos).forEach(([k, v]) => {
+        const i = Number(k);
+        if (!gruposData[i]) gruposData[i] = { nome:'', proposta:'', avaliador:'', avaliacao:'' };
+        Object.assign(gruposData[i], v);
+      });
+    }
+    buildGrupos();
+    showSync('✓ Atualizado', 'ok');
+  });
+}
+
+// ── Salva no Firebase (debounced) ──
+const _debounce = {};
+function saveToFirebase(grupoIdx) {
+  if (!db) return;
+  clearTimeout(_debounce[grupoIdx]);
+  _debounce[grupoIdx] = setTimeout(async () => {
+    showSync('⟳ Sincronizando…');
+    _suppressRemote = true;
+    try {
+      const updates = {};
+      updates[`praxis/sessao/numGrupos`] = numGrupos;
+      updates[`praxis/sessao/grupos/${grupoIdx}`] = gruposData[grupoIdx];
+      await update(ref(db), updates);
+      showSync('✓ Salvo na nuvem', 'ok');
+    } catch(e) {
+      showSync('✗ Erro ao salvar', 'error');
+      console.error(e);
+    }
+    setTimeout(() => { _suppressRemote = false; }, 500);
+  }, 600);
+}
+
+window.changeGrupos = function(delta) {
+  numGrupos = Math.max(2, Math.min(6, numGrupos + delta));
+  document.getElementById('num-grupos-display').textContent = numGrupos;
+  buildGrupos();
+  if (db) {
+    update(ref(db), { 'praxis/sessao/numGrupos': numGrupos }).catch(console.error);
+  }
+};
+
 function buildGrupos() {
   const container = document.getElementById('grupos-container');
   container.innerHTML = '';
   for (let i = 1; i <= numGrupos; i++) {
-    if (!gruposData[i]) gruposData[i] = { nome: '', proposta: '', avaliador: '', avaliacao: '' };
+    if (!gruposData[i]) gruposData[i] = { nome:'', proposta:'', avaliador:'', avaliacao:'' };
     container.appendChild(makeGrupoCard(i));
   }
 }
@@ -716,7 +881,6 @@ function makeGrupoCard(i) {
   div.className = 'grupo-card';
   div.id = 'grupo-card-' + i;
 
-  // build avaliador options usando nomes
   let opts = '<option value="">— Selecione o grupo avaliador —</option>';
   for (let j = 1; j <= numGrupos; j++) {
     if (j !== i) {
@@ -725,13 +889,12 @@ function makeGrupoCard(i) {
     }
   }
 
-  const propLen  = (d.proposta||'').length;
-  const avalLen  = (d.avaliacao||'').length;
+  const propLen   = (d.proposta||'').length;
+  const avalLen   = (d.avaliacao||'').length;
   const propClass = propLen > MAX_PROPOSTA ? 'over' : propLen > MAX_PROPOSTA*0.85 ? 'near' : '';
   const avalClass = avalLen > MAX_AVAL     ? 'over' : avalLen > MAX_AVAL*0.85     ? 'near' : '';
-
-  const locked = d.avaliador ? true : false;
-  const nomeAvaliador = d.avaliador ? nomeGrupo(Number(d.avaliador)) : '';
+  const locked    = !!d.avaliador;
+  const nomeAval  = d.avaliador ? nomeGrupo(Number(d.avaliador)) : '';
   const nomeAtual = nomeGrupo(i);
 
   div.innerHTML = `
@@ -740,7 +903,6 @@ function makeGrupoCard(i) {
       <span class="char-info">Ato 2: máx ${MAX_PROPOSTA} · Ato 3: máx ${MAX_AVAL}</span>
     </div>
     <div class="grupo-body">
-
       <div class="nome-grupo-wrap">
         <label for="nome-${i}">🏷 Nome do grupo:</label>
         <input class="nome-grupo-input" id="nome-${i}" type="text" maxlength="40"
@@ -755,8 +917,8 @@ function makeGrupoCard(i) {
           <span class="char-count ${propClass}" id="prop-count-${i}">${propLen}/${MAX_PROPOSTA}</span>
         </div>
         <textarea id="proposta-${i}" maxlength="${MAX_PROPOSTA}" rows="5"
-          placeholder="Descreva sua proposta pedagógica. Explique como sua solução supera a visão tecnicista e cria condições para a ludicidade autêntica. Máx. ${MAX_PROPOSTA} caracteres."
-          oninput="updateField(${i},'proposta',this.value)">${d.proposta}</textarea>
+          placeholder="Descreva sua proposta pedagógica. Máx. ${MAX_PROPOSTA} caracteres."
+          oninput="updateField(${i},'proposta',this.value)">${d.proposta||''}</textarea>
       </div>
 
       <div class="field-block" style="margin-top:1rem;padding-top:1rem;border-top:1.5px dashed var(--border);">
@@ -765,19 +927,19 @@ function makeGrupoCard(i) {
         </div>
         <select class="avaliador-select" onchange="updateAvaliador(${i}, this.value)">${opts}</select>
         ${locked ? `
-          <div class="lock-banner">🚫 PARE — Este espaço é exclusivo para <strong>${nomeAvaliador}</strong> preencher durante o Ato 3. ${nomeAtual}: não edite aqui.</div>
+          <div class="lock-banner">🚫 PARE — Este espaço é exclusivo para <strong>${nomeAval}</strong> preencher durante o Ato 3. ${nomeAtual}: não edite aqui.</div>
           <div class="lock-banner-instrucional">
-            <strong>📢 Instrução para o Ato 3:</strong>
-            ${nomeAvaliador}: desloque-se até o espaço do <strong>${nomeAtual}</strong>, leia a proposta acima e preencha a avaliação abaixo aplicando os 2 critérios da Cartilha Teórica.
+            <strong>📢 Instrução para o Ato 3 — ${nomeAval}:</strong>
+            Acesse a página, vá em ✍️ Grupos, leia a proposta do <strong>${nomeAtual}</strong> acima e preencha a avaliação abaixo aplicando os 2 critérios da Cartilha Teórica.
           </div>` : ''}
         <div class="field-label">
-          <span>Avaliação <em style="font-weight:400;color:var(--muted)">(${locked ? nomeAvaliador : 'grupo avaliador'} preenche)</em></span>
+          <span>Avaliação <em style="font-weight:400;color:var(--muted)">(${locked ? nomeAval : 'grupo avaliador'} preenche)</em></span>
           <span class="char-count ${avalClass}" id="aval-count-${i}">${avalLen}/${MAX_AVAL}</span>
         </div>
         <textarea id="avaliacao-${i}" maxlength="${MAX_AVAL}" rows="4"
           class="${locked ? 'locked' : ''}"
-          ${locked ? `readonly placeholder="Aguardando ${nomeAvaliador} preencher..."` : `placeholder="Aplique os 2 critérios da Cartilha Teórica. A proposta gerou ludicidade autêntica? A tecnologia foi crítica ou instrumental? Máx. ${MAX_AVAL} caracteres."`}
-          oninput="updateField(${i},'avaliacao',this.value)">${d.avaliacao}</textarea>
+          ${locked ? `readonly placeholder="Aguardando ${nomeAval} preencher…"` : `placeholder="Aplique os 2 critérios da Cartilha Teórica. Máx. ${MAX_AVAL} caracteres."`}
+          oninput="updateField(${i},'avaliacao',this.value)">${d.avaliacao||''}</textarea>
       </div>
 
       <div style="display:flex;gap:.6rem;margin-top:.8rem;align-items:center;">
@@ -788,39 +950,40 @@ function makeGrupoCard(i) {
   return div;
 }
 
-function updateNome(i, val) {
+window.updateNome = function(i, val) {
   gruposData[i].nome = val;
-  // re-render all cards so dropdown labels update everywhere
   buildGrupos();
-  // restore focus to the nome input that triggered the change
   const el = document.getElementById('nome-' + i);
   if (el) { el.focus(); el.setSelectionRange(val.length, val.length); }
-}
+  saveToFirebase(i);
+};
 
-function updateField(i, field, val) {
+window.updateField = function(i, field, val) {
   gruposData[i][field] = val;
   const maxLen = field === 'proposta' ? MAX_PROPOSTA : MAX_AVAL;
   const len    = val.length;
   const el     = document.getElementById((field==='proposta'?'prop':'aval')+'-count-'+i);
-  el.textContent = `${len}/${maxLen}`;
-  el.className   = 'char-count ' + (len > maxLen ? 'over' : len > maxLen*0.85 ? 'near' : '');
-}
+  if (el) { el.textContent = `${len}/${maxLen}`; el.className = 'char-count ' + (len > maxLen ? 'over' : len > maxLen*0.85 ? 'near' : ''); }
+  saveToFirebase(i);
+};
 
-function updateAvaliador(i, val) {
+window.updateAvaliador = function(i, val) {
   gruposData[i].avaliador = val;
-  // re-render all cards so all dropdowns reflect updated state
   buildGrupos();
-}
+  saveToFirebase(i);
+};
 
-function saveGrupo(i) {
+window.saveGrupo = function(i) {
   const btn = document.getElementById('save-btn-' + i);
   btn.textContent = '✅ Salvo!';
   btn.classList.add('saved');
   document.getElementById('save-status-' + i).textContent = 'Salvo às ' + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   setTimeout(() => { btn.textContent = '💾 Salvar'; btn.classList.remove('saved'); }, 2000);
-}
+  saveToFirebase(i);
+};
 
 buildGrupos();
+startRemoteListener();
 
 // ══════════ QR CODE ══════════
 function buildQR() {
@@ -828,7 +991,6 @@ function buildQR() {
   document.getElementById('qr-url-text').textContent = url;
   const canvas = document.getElementById('qr-canvas');
   const ctx = canvas.getContext('2d');
-  // Simple QR using qrcodejs into a temp div then draw
   const tmp = document.createElement('div');
   tmp.style.display = 'none';
   document.body.appendChild(tmp);
@@ -838,34 +1000,31 @@ function buildQR() {
       const img = tmp.querySelector('img') || tmp.querySelector('canvas');
       if (img) {
         ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,220,220);
-        if (img.tagName === 'CANVAS') {
-          ctx.drawImage(img, 3, 3, 214, 214);
-        } else {
-          const i2 = new Image(); i2.onload = () => ctx.drawImage(i2,3,3,214,214); i2.src = img.src;
-        }
+        if (img.tagName === 'CANVAS') { ctx.drawImage(img, 3, 3, 214, 214); }
+        else { const i2 = new Image(); i2.onload = () => ctx.drawImage(i2,3,3,214,214); i2.src = img.src; }
       }
       tmp.remove();
     }, 300);
   } catch(e) {
     ctx.fillStyle = '#1F4E79'; ctx.fillRect(0,0,220,220);
-    ctx.fillStyle = '#fff'; ctx.font = '13px DM Sans';
-    ctx.textAlign = 'center';
-    ctx.fillText('Abra este arquivo', 110, 100);
-    ctx.fillText('no navegador para', 110, 118);
-    ctx.fillText('gerar o QR Code', 110, 136);
+    ctx.fillStyle = '#fff'; ctx.font = '13px DM Sans'; ctx.textAlign = 'center';
+    ctx.fillText('Abra no navegador', 110, 100); ctx.fillText('para gerar o QR', 110, 118);
     tmp.remove();
   }
 }
 
-function downloadQR() {
+window.downloadQR = function() {
   const canvas = document.getElementById('qr-canvas');
   const a = document.createElement('a');
   a.download = 'QRCode_Praxis_em_Jogo.png';
   a.href = canvas.toDataURL('image/png');
   a.click();
-}
+};
 
 buildQR();
 </script>
+
+<!-- QR Code lib (carregada depois do module) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </body>
 </html>
