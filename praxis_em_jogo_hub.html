@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Práxis em Jogo — Hub Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:    #1F4E79;
+  --blue-m:  #2E75B6;
+  --blue-l:  #D6E4F0;
+  --green:   #375623;
+  --green-m: #538135;
+  --green-l: #D9EAD3;
+  --orange:  #7B2D00;
+  --orange-m:#C55A11;
+  --orange-l:#FCE5CD;
+  --ink:     #111827;
+  --muted:   #6B7280;
+  --border:  #E5E7EB;
+  --bg:      #F9FAFB;
+  --white:   #FFFFFF;
+  --warn:    #DC2626;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* ── NAV ── */
+nav {
+  background: var(--blue);
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,.25);
+}
+
+nav button {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.65);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .8rem;
+  font-weight: 500;
+  padding: .85rem 1.1rem;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+  transition: all .2s;
+  letter-spacing: .03em;
+}
+nav button:hover  { color: #fff; background: rgba(255,255,255,.08); }
+nav button.active { color: #fff; border-bottom-color: #60A5FA; background: rgba(255,255,255,.1); }
+nav .brand {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1rem;
+  color: #fff;
+  padding: .85rem 1.4rem;
+  border-right: 1px solid rgba(255,255,255,.15);
+  margin-right: .5rem;
+  white-space: nowrap;
+}
+
+/* ── SECTIONS ── */
+.section { display: none; animation: fadeIn .3s ease; }
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, var(--blue) 0%, #0F2D4E 100%);
+  color: #fff;
+  padding: 3rem 2rem 2.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 30%, rgba(46,117,182,.4) 0%, transparent 60%);
+}
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  position: relative;
+  letter-spacing: -.02em;
+}
+.hero p {
+  color: rgba(255,255,255,.75);
+  margin-top: .5rem;
+  font-size: .95rem;
+  position: relative;
+}
+.hero-cards {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  position: relative;
+}
+.hero-card {
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 12px;
+  padding: .9rem 1.4rem;
+  text-align: center;
+  backdrop-filter: blur(4px);
+  min-width: 120px;
+}
+.hero-card .num { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: #60A5FA; }
+.hero-card .lbl { font-size: .72rem; color: rgba(255,255,255,.7); margin-top: .1rem; text-transform: uppercase; letter-spacing: .06em; }
+
+/* ── CONTAINER ── */
+.container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+/* ── TIMER ── */
+.timer-wrap {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  margin-bottom: 1.5rem;
+}
+.timer-wrap h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem;
+  color: var(--blue);
+  margin-bottom: 1rem;
+}
+.acts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: .75rem;
+  margin-bottom: 1.2rem;
+}
+.act-btn {
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: .9rem 1rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all .2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.act-btn:hover { border-color: var(--blue-m); background: var(--blue-l); }
+.act-btn.running { border-color: var(--blue-m); background: var(--blue-l); }
+.act-btn .act-num { font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.act-btn .act-name { font-size: .88rem; font-weight: 600; color: var(--ink); margin: .2rem 0; }
+.act-btn .act-time { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--blue-m); }
+.act-btn .act-mode { font-size: .7rem; color: var(--muted); }
+
+.timer-display {
+  text-align: center;
+  padding: 1.2rem;
+  background: var(--blue);
+  border-radius: 14px;
+  color: #fff;
+}
+.timer-display .t-label { font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; opacity: .7; }
+.timer-display .t-name  { font-family: 'DM Serif Display', serif; font-size: 1.2rem; margin: .3rem 0; }
+.timer-display .t-clock {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 3.5rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  transition: color .3s;
+}
+.timer-display .t-clock.urgent { color: #FCA5A5; }
+.timer-display .t-clock.done   { color: #86EFAC; }
+.timer-btns { display: flex; gap: .6rem; justify-content: center; margin-top: .9rem; }
+.timer-btns button {
+  border: none; border-radius: 8px; padding: .5rem 1.2rem;
+  font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600;
+  cursor: pointer; transition: all .15s;
+}
+.btn-start  { background: #22C55E; color: #fff; }
+.btn-pause  { background: #F59E0B; color: #fff; }
+.btn-reset  { background: rgba(255,255,255,.15); color: #fff; }
+.btn-start:hover { background: #16A34A; }
+.btn-pause:hover { background: #D97706; }
+.btn-reset:hover { background: rgba(255,255,255,.25); }
+.progress-bar-wrap { height: 6px; background: rgba(255,255,255,.2); border-radius: 3px; margin-top: .8rem; overflow: hidden; }
+.progress-bar { height: 100%; background: #60A5FA; border-radius: 3px; transition: width .9s linear, background .3s; }
+
+/* ── CRITÉRIOS ── */
+.criterios-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 600px) { .criterios-grid { grid-template-columns: 1fr; } }
+
+.criterio-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+.criterio-header {
+  padding: 1.2rem 1.4rem;
+  color: #fff;
+}
+.criterio-header .c-num { font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; opacity: .8; }
+.criterio-header .c-title { font-family: 'DM Serif Display', serif; font-size: 1.4rem; margin: .3rem 0 .1rem; }
+.criterio-header .c-pergunta { font-size: .8rem; opacity: .9; font-style: italic; line-height: 1.4; }
+.criterio-body { background: #fff; padding: 1.2rem 1.4rem; }
+
+.indicadores { margin-bottom: 1rem; }
+.ind-label {
+  font-size: .68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; margin-bottom: .5rem; display: flex; align-items: center; gap: .4rem;
+}
+.ind-label.pos { color: var(--green-m); }
+.ind-label.neg { color: var(--orange-m); }
+.ind-item {
+  font-size: .82rem; color: var(--ink); line-height: 1.45;
+  padding: .4rem .6rem .4rem 1.8rem;
+  position: relative;
+  border-radius: 6px;
+  margin-bottom: .3rem;
+}
+.ind-item::before { position: absolute; left: .4rem; top: .4rem; font-size: .8rem; }
+.ind-item.pos { background: var(--green-l); }
+.ind-item.pos::before { content: '✓'; color: var(--green-m); }
+.ind-item.neg { background: var(--orange-l); }
+.ind-item.neg::before { content: '✗'; color: var(--orange-m); }
+
+.citacao-box {
+  border-radius: 10px;
+  padding: .9rem 1rem;
+  font-size: .78rem;
+  font-style: italic;
+  line-height: 1.5;
+  margin-top: .8rem;
+}
+
+/* ── GRUPOS ── */
+.grupos-header {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.grupos-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--blue); }
+.num-grupos-ctrl { display: flex; align-items: center; gap: .6rem; }
+.num-grupos-ctrl button {
+  width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--blue);
+  background: none; color: var(--blue); font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-weight: 700;
+  transition: all .15s;
+}
+.num-grupos-ctrl button:hover { background: var(--blue); color: #fff; }
+.num-grupos-ctrl span { font-weight: 700; font-size: 1rem; min-width: 24px; text-align: center; }
+
+.grupo-card {
+  background: var(--white);
+  border-radius: 16px;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  overflow: hidden;
+  border: 2px solid var(--border);
+  transition: border-color .2s;
+}
+.grupo-card:focus-within { border-color: var(--blue-m); }
+.grupo-header {
+  background: var(--blue);
+  padding: .9rem 1.4rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.grupo-header h3 { font-family: 'DM Serif Display', serif; font-size: 1.1rem; }
+.grupo-header .char-info { font-size: .72rem; opacity: .75; font-family: 'JetBrains Mono', monospace; }
+
+.grupo-body { padding: 1.2rem 1.4rem; }
+
+.field-block { margin-bottom: 1.2rem; }
+.field-label {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--muted); margin-bottom: .4rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.char-count { font-family: 'JetBrains Mono', monospace; font-size: .7rem; }
+.char-count.near  { color: #F59E0B; }
+.char-count.over  { color: var(--warn); }
+
+textarea {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: .75rem .9rem; font-family: 'DM Sans', sans-serif; font-size: .88rem;
+  line-height: 1.5; resize: vertical; background: var(--bg);
+  transition: border-color .2s, background .2s; color: var(--ink);
+  min-height: 90px;
+}
+textarea:focus { outline: none; border-color: var(--blue-m); background: var(--white); }
+textarea.locked {
+  background: #FEF2F2; border-color: #FECACA; cursor: not-allowed;
+  color: var(--muted);
+}
+textarea.locked:focus { border-color: #FECACA; background: #FEF2F2; }
+
+.lock-banner {
+  background: #FEF2F2; border: 1.5px solid #FECACA;
+  border-radius: 10px; padding: .7rem 1rem;
+  font-size: .8rem; color: var(--warn); font-weight: 600;
+  display: flex; align-items: center; gap: .5rem;
+  margin-bottom: .6rem;
+}
+
+.avaliador-select {
+  width: 100%; padding: .5rem .8rem; border-radius: 8px;
+  border: 1.5px solid var(--border); font-family: 'DM Sans', sans-serif;
+  font-size: .85rem; background: var(--bg); color: var(--ink);
+  cursor: pointer; margin-bottom: .8rem;
+}
+.avaliador-select:focus { outline: none; border-color: var(--blue-m); }
+
+.save-btn {
+  background: var(--blue); color: #fff; border: none;
+  border-radius: 10px; padding: .55rem 1.2rem;
+  font-family: 'DM Sans', sans-serif; font-size: .85rem;
+  font-weight: 600; cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; gap: .4rem;
+}
+.save-btn:hover { background: var(--blue-m); }
+.save-btn.saved { background: #22C55E; }
+
+/* ── QR ── */
+.qr-section {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  text-align: center;
+}
+.qr-section h2 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--blue); margin-bottom: .5rem; }
+.qr-section p  { color: var(--muted); font-size: .88rem; margin-bottom: 1.5rem; }
+#qr-canvas { border-radius: 12px; border: 3px solid var(--blue-l); }
+.qr-url-box {
+  margin-top: 1rem; background: var(--bg); border-radius: 10px;
+  padding: .7rem 1rem; font-family: 'JetBrains Mono', monospace;
+  font-size: .78rem; color: var(--blue); word-break: break-all;
+  border: 1.5px solid var(--blue-l);
+}
+.qr-hint { margin-top: .75rem; font-size: .78rem; color: var(--muted); }
+
+/* ── FOOTER ── */
+footer {
+  text-align: center; padding: 1.5rem; font-size: .75rem;
+  color: var(--muted); border-top: 1px solid var(--border);
+  margin-top: 2rem;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">Práxis em Jogo</div>
+  <button class="active" onclick="showSection('home', this)">🏠 Início</button>
+  <button onclick="showSection('timer', this)">⏱ Timer</button>
+  <button onclick="showSection('criterios', this)">📋 Critérios</button>
+  <button onclick="showSection('grupos', this)">✍️ Grupos</button>
+  <button onclick="showSection('qr', this)">📲 QR Code</button>
+</nav>
+
+<!-- ══════════════════ HOME ══════════════════ -->
+<div id="home" class="section active">
+  <div class="hero">
+    <h1>Práxis em Jogo</h1>
+    <p>Dispositivo Híbrido Iterativo de Autoria e Leitura Crítica</p>
+    <div class="hero-cards">
+      <div class="hero-card"><div class="num">18</div><div class="lbl">min / rodada</div></div>
+      <div class="hero-card"><div class="num">4</div><div class="lbl">atos</div></div>
+      <div class="hero-card"><div class="num">2</div><div class="lbl">critérios</div></div>
+      <div class="hero-card"><div class="num">6</div><div class="lbl">dilemas</div></div>
+    </div>
+  </div>
+  <div class="container">
+    <div style="background:var(--white);border-radius:16px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:1.2rem;">
+      <h2 style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--blue);margin-bottom:1rem;">Os 4 Atos</h2>
+      <div style="display:flex;flex-direction:column;gap:.7rem;">
+        <div style="display:flex;gap:1rem;align-items:flex-start;">
+          <div style="background:var(--blue);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;">1</div>
+          <div><div style="font-weight:600;font-size:.9rem;">Imersão no Dilema <span style="color:var(--muted);font-weight:400;font-size:.78rem;">· 5 min · Analógico</span></div><div style="font-size:.82rem;color:var(--muted);line-height:1.4;margin-top:.2rem;">O grupo lê a Carta de Cenário de Tensão física. Debate intenso — sem resposta óbvia.</div></div>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:flex-start;">
+          <div style="background:var(--green);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;">2</div>
+          <div><div style="font-weight:600;font-size:.9rem;">Autoria e Registro <span style="color:var(--muted);font-weight:400;font-size:.78rem;">· 5 min · Digital</span></div><div style="font-size:.82rem;color:var(--muted);line-height:1.4;margin-top:.2rem;">O grupo registra sua proposta pedagógica aqui. Síntese obrigatória — máx. 600 caracteres.</div></div>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:flex-start;">
+          <div style="background:var(--orange);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;">3</div>
+          <div><div style="font-weight:600;font-size:.9rem;">Leitura Crítica da Prática <span style="color:var(--muted);font-weight:400;font-size:.78rem;">· 5 min · Híbrido</span></div><div style="font-size:.82rem;color:var(--muted);line-height:1.4;margin-top:.2rem;">O grupo avaliador acessa a aba Grupos, lê a proposta do outro e registra a contracorrente.</div></div>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:flex-start;">
+          <div style="background:var(--blue-m);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;">4</div>
+          <div><div style="font-weight:600;font-size:.9rem;">Práxis e Síntese <span style="color:var(--muted);font-weight:400;font-size:.78rem;">· 3 min · Oral</span></div><div style="font-size:.82rem;color:var(--muted);line-height:1.4;margin-top:.2rem;">O grupo proponente lê a crítica recebida e faz réplica oral explicitando o aprendizado.</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--blue-l);border-left:4px solid var(--blue);border-radius:0 12px 12px 0;padding:1rem 1.2rem;font-size:.85rem;color:var(--blue);line-height:1.5;">
+      <strong>Lembre-se:</strong> O jogo não é o objetivo — é o dispositivo. A reflexão não antecede a ação nem a sucede: ela ocorre simultaneamente, no tensionamento entre o que o grupo propôs e o que o outro grupo desvelou.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ TIMER ══════════════════ -->
+<div id="timer" class="section">
+  <div class="container">
+    <div class="timer-wrap">
+      <h2>⏱ Cronômetro dos Atos</h2>
+      <div class="acts-grid" id="acts-grid">
+        <!-- generated by JS -->
+      </div>
+      <div class="timer-display">
+        <div class="t-label">ATO ATUAL</div>
+        <div class="t-name" id="t-name">Selecione um ato acima</div>
+        <div class="t-clock" id="t-clock">--:--</div>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="t-bar" style="width:100%"></div></div>
+        <div class="timer-btns">
+          <button class="btn-start" id="btn-start" onclick="timerStart()">▶ Iniciar</button>
+          <button class="btn-pause" id="btn-pause" onclick="timerPause()" style="display:none">⏸ Pausar</button>
+          <button class="btn-reset" onclick="timerReset()">↺ Reiniciar</button>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--white);border-radius:16px;padding:1.2rem 1.5rem;box-shadow:0 1px 4px rgba(0,0,0,.08);">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--blue);margin-bottom:.6rem;">Linha do Tempo Completa</div>
+      <div style="font-size:.82rem;color:var(--muted);">Ato 1 (0–5 min) → Ato 2 (5–10 min) → Ato 3 (10–15 min) → Ato 4 (15–18 min) · Total: 18 min por rodada</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ CRITÉRIOS ══════════════════ -->
+<div id="criterios" class="section">
+  <div class="container">
+    <div style="margin-bottom:1.2rem;">
+      <h2 style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--blue);">Cartilha Teórica — Critérios do Ato 3</h2>
+      <p style="color:var(--muted);font-size:.88rem;margin-top:.3rem;">Use estes critérios para guiar a leitura crítica da proposta do outro grupo.</p>
+    </div>
+    <div class="criterios-grid">
+      <!-- Critério 1 -->
+      <div class="criterio-card">
+        <div class="criterio-header" style="background:var(--green);">
+          <div class="c-num">Critério 1</div>
+          <div class="c-title">Ludicidade Autêntica</div>
+          <div class="c-pergunta">A proposta gerou ludicidade autêntica ou foi apenas um adereço divertido?</div>
+        </div>
+        <div class="criterio-body">
+          <div class="indicadores">
+            <div class="ind-label pos">✓ Indicadores positivos</div>
+            <div class="ind-item pos">Os sujeitos demonstraram entrega total à atividade (estado interno, não performance)?</div>
+            <div class="ind-item pos">Houve abertura para o erro e a experimentação sem medo de punição?</div>
+            <div class="ind-item pos">A atividade gerou debate genuíno, sem resposta flagrantemente certa?</div>
+            <div class="ind-item pos">Os estudantes saíram do papel passivo e tornaram-se autores do processo?</div>
+          </div>
+          <div class="indicadores">
+            <div class="ind-label neg">✗ Sinais de alerta</div>
+            <div class="ind-item neg">A atividade priorizou velocidade, pontuação ou competição?</div>
+            <div class="ind-item neg">Os alunos participaram para "ganhar", não para aprender?</div>
+            <div class="ind-item neg">A tecnologia ditou o ritmo e as regras, sem espaço para criação?</div>
+          </div>
+          <div class="citacao-box" style="background:var(--green-l);color:var(--green);">
+            <strong>Luckesi (2014):</strong> "A ludicidade é um estado interno do sujeito que experimenta plenitude ao realizar uma atividade — não produzível por design externo."
+          </div>
+        </div>
+      </div>
+      <!-- Critério 2 -->
+      <div class="criterio-card">
+        <div class="criterio-header" style="background:var(--orange);">
+          <div class="c-num">Critério 2</div>
+          <div class="c-title">Tecnologia Crítica</div>
+          <div class="c-pergunta">A tecnologia foi usada de forma crítica e dialógica ou permaneceu puramente instrumental?</div>
+        </div>
+        <div class="criterio-body">
+          <div class="indicadores">
+            <div class="ind-label pos">✓ Indicadores positivos</div>
+            <div class="ind-item pos">A tecnologia foi meio de expressão e autoria, não apenas de execução?</div>
+            <div class="ind-item pos">Os estudantes produziram conhecimento com a ferramenta, não através dela?</div>
+            <div class="ind-item pos">Houve interação entre sujeitos mediada pela tecnologia, não substituída por ela?</div>
+            <div class="ind-item pos">A proposta superou a lógica tecnicista (usar por usar)?</div>
+          </div>
+          <div class="indicadores">
+            <div class="ind-label neg">✗ Sinais de alerta</div>
+            <div class="ind-item neg">A tecnologia ditou o ritmo da atividade, sem espaço para criação?</div>
+            <div class="ind-item neg">Os alunos operaram a ferramenta mecanicamente, sem reflexão?</div>
+            <div class="ind-item neg">A proposta poderia existir exatamente igual sem a tecnologia?</div>
+          </div>
+          <div class="citacao-box" style="background:var(--orange-l);color:var(--orange);">
+            <strong>Jensen et al. (2022):</strong> O lúdico autêntico no ensino superior é uma abordagem cultural e aberta que permite o erro, a experimentação e a reflexão crítica — o oposto da performance corporativa.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:1.2rem;background:var(--blue-l);border-left:4px solid var(--blue);border-radius:0 12px 12px 0;padding:1rem 1.2rem;font-size:.85rem;color:var(--blue);line-height:1.5;">
+      <strong>Freire — Dialogicidade:</strong> Ao analisar o dilema do outro, você não está aplicando um gabarito. Você estabelece um encontro dialógico mediado pelo mundo. O tensionamento gerado é o motor da práxis: reflexão e ação simultâneas sobre o mundo para transformá-lo.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ GRUPOS ══════════════════ -->
+<div id="grupos" class="section">
+  <div class="container">
+    <div class="grupos-header">
+      <div>
+        <h2>Espaço dos Grupos</h2>
+        <p style="font-size:.82rem;color:var(--muted);margin-top:.2rem;">Ato 2: proposta · Ato 3: avaliação cruzada</p>
+      </div>
+      <div class="num-grupos-ctrl">
+        <span style="font-size:.8rem;color:var(--muted);margin-right:.3rem;">Grupos:</span>
+        <button onclick="changeGrupos(-1)">−</button>
+        <span id="num-grupos-display">3</span>
+        <button onclick="changeGrupos(1)">+</button>
+      </div>
+    </div>
+    <div id="grupos-container"></div>
+  </div>
+</div>
+
+<!-- ══════════════════ QR ══════════════════ -->
+<div id="qr" class="section">
+  <div class="container">
+    <div class="qr-section">
+      <h2>📲 QR Code de Acesso</h2>
+      <p>Imprima e cole na mesa central. Qualquer participante escaneia para acessar este hub.</p>
+      <canvas id="qr-canvas" width="220" height="220"></canvas>
+      <div class="qr-url-box" id="qr-url-text">Carregando URL...</div>
+      <p class="qr-hint">💡 Para usar em sala: hospede este arquivo em qualquer servidor ou Google Drive público e atualize o link acima.</p>
+      <button onclick="downloadQR()" style="margin-top:1rem;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:.6rem 1.4rem;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;">⬇ Baixar QR Code</button>
+    </div>
+  </div>
+</div>
+
+<footer>Práxis em Jogo · Problema 10 — Ludicidade, Tecnologia e Ensino · Material de uso livre para fins pedagógicos</footer>
+
+<!-- QR Code lib -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+// ══════════ NAV ══════════
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// ══════════ TIMER ══════════
+const ACTS = [
+  { num: 1, name: 'Imersão no Dilema',        secs: 300, mode: 'Analógico',  color: '#1F4E79' },
+  { num: 2, name: 'Autoria e Registro',        secs: 300, mode: 'Digital',    color: '#375623' },
+  { num: 3, name: 'Leitura Crítica',           secs: 300, mode: 'Híbrido',    color: '#7B2D00' },
+  { num: 4, name: 'Práxis e Síntese',          secs: 180, mode: 'Oral',       color: '#2E75B6' },
+];
+
+let currentAct = null, remaining = 0, totalSecs = 0, timerInterval = null, running = false;
+
+function buildActsGrid() {
+  const grid = document.getElementById('acts-grid');
+  grid.innerHTML = '';
+  ACTS.forEach((a, i) => {
+    const b = document.createElement('button');
+    b.className = 'act-btn';
+    b.id = 'act-btn-' + i;
+    b.innerHTML = `<div class="act-num">Ato ${a.num}</div>
+      <div class="act-name">${a.name}</div>
+      <div class="act-time">${Math.floor(a.secs/60)}:00</div>
+      <div class="act-mode">${a.mode}</div>`;
+    b.onclick = () => selectAct(i);
+    grid.appendChild(b);
+  });
+}
+
+function selectAct(i) {
+  timerReset();
+  currentAct = i;
+  remaining = ACTS[i].secs;
+  totalSecs  = ACTS[i].secs;
+  document.getElementById('t-name').textContent = `Ato ${ACTS[i].num} — ${ACTS[i].name}`;
+  document.getElementById('t-clock').textContent = formatTime(remaining);
+  document.getElementById('t-clock').className = 't-clock';
+  document.getElementById('t-bar').style.width = '100%';
+  document.getElementById('t-bar').style.background = '#60A5FA';
+  document.querySelectorAll('.act-btn').forEach((b,j) => b.classList.toggle('running', j===i));
+}
+
+function formatTime(s) {
+  return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+}
+
+function timerStart() {
+  if (currentAct === null) { alert('Selecione um ato primeiro.'); return; }
+  if (remaining <= 0) return;
+  running = true;
+  document.getElementById('btn-start').style.display = 'none';
+  document.getElementById('btn-pause').style.display = 'inline-flex';
+  timerInterval = setInterval(() => {
+    remaining--;
+    const clock = document.getElementById('t-clock');
+    const bar   = document.getElementById('t-bar');
+    clock.textContent = formatTime(remaining);
+    const pct = (remaining / totalSecs) * 100;
+    bar.style.width = pct + '%';
+    if (remaining <= 30) { clock.className = 't-clock urgent'; bar.style.background = '#F87171'; }
+    else if (remaining <= 60) { bar.style.background = '#FBBF24'; }
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      running = false;
+      clock.className = 't-clock done';
+      clock.textContent = '00:00';
+      document.getElementById('btn-start').style.display = 'inline-flex';
+      document.getElementById('btn-pause').style.display = 'none';
+      // beep
+      try {
+        const ctx = new AudioContext();
+        [0,0.15,0.3].forEach(t => {
+          const o = ctx.createOscillator(); const g = ctx.createGain();
+          o.connect(g); g.connect(ctx.destination);
+          o.frequency.value = 880; g.gain.setValueAtTime(.4, ctx.currentTime+t);
+          g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime+t+.25);
+          o.start(ctx.currentTime+t); o.stop(ctx.currentTime+t+.3);
+        });
+      } catch(e){}
+    }
+  }, 1000);
+}
+
+function timerPause() {
+  clearInterval(timerInterval); running = false;
+  document.getElementById('btn-start').style.display = 'inline-flex';
+  document.getElementById('btn-pause').style.display = 'none';
+}
+
+function timerReset() {
+  clearInterval(timerInterval); running = false;
+  if (currentAct !== null) {
+    remaining = ACTS[currentAct].secs;
+    document.getElementById('t-clock').textContent = formatTime(remaining);
+    document.getElementById('t-clock').className = 't-clock';
+    document.getElementById('t-bar').style.width = '100%';
+    document.getElementById('t-bar').style.background = '#60A5FA';
+  }
+  document.getElementById('btn-start').style.display = 'inline-flex';
+  document.getElementById('btn-pause').style.display = 'none';
+}
+
+buildActsGrid();
+
+// ══════════ GRUPOS ══════════
+let numGrupos = 3;
+const MAX_PROPOSTA = 600;
+const MAX_AVAL     = 500;
+const gruposData   = {};
+
+function changeGrupos(delta) {
+  numGrupos = Math.max(2, Math.min(6, numGrupos + delta));
+  document.getElementById('num-grupos-display').textContent = numGrupos;
+  buildGrupos();
+}
+
+function buildGrupos() {
+  const container = document.getElementById('grupos-container');
+  container.innerHTML = '';
+  for (let i = 1; i <= numGrupos; i++) {
+    if (!gruposData[i]) gruposData[i] = { proposta: '', avaliador: '', avaliacao: '' };
+    container.appendChild(makeGrupoCard(i));
+  }
+}
+
+function makeGrupoCard(i) {
+  const d = gruposData[i];
+  const div = document.createElement('div');
+  div.className = 'grupo-card';
+  div.id = 'grupo-card-' + i;
+
+  // build avaliador options
+  let opts = '<option value="">— Selecione o grupo avaliador —</option>';
+  for (let j = 1; j <= numGrupos; j++) {
+    if (j !== i) opts += `<option value="${j}" ${d.avaliador==j?'selected':''}> Grupo ${j} avaliará este espaço</option>`;
+  }
+
+  const propLen  = (d.proposta||'').length;
+  const avalLen  = (d.avaliacao||'').length;
+  const propClass = propLen > MAX_PROPOSTA ? 'over' : propLen > MAX_PROPOSTA*0.85 ? 'near' : '';
+  const avalClass = avalLen > MAX_AVAL     ? 'over' : avalLen > MAX_AVAL*0.85     ? 'near' : '';
+
+  const locked = d.avaliador ? true : false;
+
+  div.innerHTML = `
+    <div class="grupo-header">
+      <h3>Grupo ${i}</h3>
+      <span class="char-info">Ato 2: máx ${MAX_PROPOSTA} · Ato 3: máx ${MAX_AVAL}</span>
+    </div>
+    <div class="grupo-body">
+      <div class="field-block">
+        <div class="field-label">
+          <span>✍️ ATO 2 — Proposta Pedagógica <em style="font-weight:400;color:var(--muted)">(Grupo ${i} preenche)</em></span>
+          <span class="char-count ${propClass}" id="prop-count-${i}">${propLen}/${MAX_PROPOSTA}</span>
+        </div>
+        <textarea id="proposta-${i}" maxlength="${MAX_PROPOSTA}" rows="5"
+          placeholder="Descreva sua proposta pedagógica. Explique como sua solução supera a visão tecnicista e cria condições para a ludicidade autêntica. Máx. ${MAX_PROPOSTA} caracteres."
+          oninput="updateField(${i},'proposta',this.value)">${d.proposta}</textarea>
+      </div>
+
+      <div class="field-block" style="margin-top:1rem;padding-top:1rem;border-top:1.5px dashed var(--border);">
+        <div class="field-label" style="color:var(--orange-m);">
+          🔒 ATO 3 — Contracorrente Avaliativa
+        </div>
+        <select class="avaliador-select" onchange="updateAvaliador(${i}, this.value)">${opts}</select>
+        ${locked ? `<div class="lock-banner">🚫 PARE — Este espaço é exclusivo para o <strong>Grupo ${d.avaliador}</strong> preencher durante o Ato 3. Grupo ${i}: não edite aqui.</div>` : ''}
+        <div class="field-label">
+          <span>Avaliação <em style="font-weight:400;color:var(--muted)">(Grupo avaliador preenche)</em></span>
+          <span class="char-count ${avalClass}" id="aval-count-${i}">${avalLen}/${MAX_AVAL}</span>
+        </div>
+        <textarea id="avaliacao-${i}" maxlength="${MAX_AVAL}" rows="4"
+          class="${locked ? 'locked' : ''}"
+          ${locked ? 'readonly placeholder="Aguardando o Grupo avaliador..."' : `placeholder="Aplique os 2 critérios da Cartilha Teórica. A proposta gerou ludicidade autêntica? A tecnologia foi crítica ou instrumental? Máx. ${MAX_AVAL} caracteres."`}
+          oninput="updateField(${i},'avaliacao',this.value)">${d.avaliacao}</textarea>
+      </div>
+
+      <div style="display:flex;gap:.6rem;margin-top:.8rem;align-items:center;">
+        <button class="save-btn" id="save-btn-${i}" onclick="saveGrupo(${i})">💾 Salvar</button>
+        <span style="font-size:.75rem;color:var(--muted)" id="save-status-${i}"></span>
+      </div>
+    </div>`;
+  return div;
+}
+
+function updateField(i, field, val) {
+  gruposData[i][field] = val;
+  const maxLen = field === 'proposta' ? MAX_PROPOSTA : MAX_AVAL;
+  const len    = val.length;
+  const el     = document.getElementById((field==='proposta'?'prop':'aval')+'-count-'+i);
+  el.textContent = `${len}/${maxLen}`;
+  el.className   = 'char-count ' + (len > maxLen ? 'over' : len > maxLen*0.85 ? 'near' : '');
+}
+
+function updateAvaliador(i, val) {
+  gruposData[i].avaliador = val;
+  // re-render this card
+  const old = document.getElementById('grupo-card-' + i);
+  old.replaceWith(makeGrupoCard(i));
+}
+
+function saveGrupo(i) {
+  const btn = document.getElementById('save-btn-' + i);
+  btn.textContent = '✅ Salvo!';
+  btn.classList.add('saved');
+  document.getElementById('save-status-' + i).textContent = 'Salvo às ' + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  setTimeout(() => { btn.textContent = '💾 Salvar'; btn.classList.remove('saved'); }, 2000);
+}
+
+buildGrupos();
+
+// ══════════ QR CODE ══════════
+function buildQR() {
+  const url = window.location.href;
+  document.getElementById('qr-url-text').textContent = url;
+  const canvas = document.getElementById('qr-canvas');
+  const ctx = canvas.getContext('2d');
+  // Simple QR using qrcodejs into a temp div then draw
+  const tmp = document.createElement('div');
+  tmp.style.display = 'none';
+  document.body.appendChild(tmp);
+  try {
+    new QRCode(tmp, { text: url, width: 214, height: 214, colorDark: '#1F4E79', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+    setTimeout(() => {
+      const img = tmp.querySelector('img') || tmp.querySelector('canvas');
+      if (img) {
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,220,220);
+        if (img.tagName === 'CANVAS') {
+          ctx.drawImage(img, 3, 3, 214, 214);
+        } else {
+          const i2 = new Image(); i2.onload = () => ctx.drawImage(i2,3,3,214,214); i2.src = img.src;
+        }
+      }
+      tmp.remove();
+    }, 300);
+  } catch(e) {
+    ctx.fillStyle = '#1F4E79'; ctx.fillRect(0,0,220,220);
+    ctx.fillStyle = '#fff'; ctx.font = '13px DM Sans';
+    ctx.textAlign = 'center';
+    ctx.fillText('Abra este arquivo', 110, 100);
+    ctx.fillText('no navegador para', 110, 118);
+    ctx.fillText('gerar o QR Code', 110, 136);
+    tmp.remove();
+  }
+}
+
+function downloadQR() {
+  const canvas = document.getElementById('qr-canvas');
+  const a = document.createElement('a');
+  a.download = 'QRCode_Praxis_em_Jogo.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+buildQR();
+</script>
+</body>
+</html>
