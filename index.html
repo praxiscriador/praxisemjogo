@@ -33,43 +33,6 @@ body {
   min-height: 100vh;
 }
 
-/* ── FIREBASE CONFIG BANNER ── */
-#firebase-config-banner {
-  background: #FEF3C7;
-  border-bottom: 2px solid #F59E0B;
-  padding: .8rem 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: .8rem;
-  font-size: .82rem;
-  color: #92400E;
-}
-#firebase-config-banner.hidden { display: none; }
-#firebase-config-banner strong { font-weight: 700; }
-#firebase-config-banner a { color: #1D4ED8; text-decoration: underline; cursor: pointer; }
-
-#sync-status {
-  position: fixed;
-  bottom: 1rem; right: 1rem;
-  background: var(--blue);
-  color: #fff;
-  border-radius: 20px;
-  padding: .4rem 1rem;
-  font-size: .75rem;
-  font-weight: 600;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  gap: .4rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,.2);
-  transition: all .3s;
-  opacity: 0;
-  pointer-events: none;
-}
-#sync-status.show { opacity: 1; }
-#sync-status.error { background: var(--warn); }
-#sync-status.ok    { background: #22C55E; }
-
 /* ── NAV ── */
 nav {
   background: var(--blue);
@@ -281,52 +244,56 @@ nav .brand {
   margin-top: .8rem;
 }
 
-/* ── GRUPOS ── */
-.grupos-header {
-  background: var(--white);
-  border-radius: 16px;
-  padding: 1.2rem 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,.08);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
+/* ── GRUPOS (novo sistema de salas) ── */
+.sala-setup {
+  background: var(--white); border-radius: 16px; padding: 2rem 1.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 1.5rem; text-align: center;
 }
-.grupos-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--blue); }
-.num-grupos-ctrl { display: flex; align-items: center; gap: .6rem; }
-.num-grupos-ctrl button {
-  width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--blue);
-  background: none; color: var(--blue); font-size: 1.1rem; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; font-weight: 700;
-  transition: all .15s;
+.sala-setup h2 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--blue); margin-bottom: .4rem; }
+.sala-setup p  { font-size: .85rem; color: var(--muted); margin-bottom: 1.5rem; }
+.sala-flow { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+.sala-divider { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+.sala-input-row { display: flex; gap: .6rem; width: 100%; max-width: 380px; }
+.sala-input {
+  flex: 1; border: 2px solid var(--border); border-radius: 10px;
+  padding: .65rem 1rem; font-family: 'JetBrains Mono', monospace; font-size: 1.1rem;
+  text-transform: uppercase; letter-spacing: .12em; text-align: center;
+  background: var(--bg); color: var(--blue); transition: border-color .2s;
 }
-.num-grupos-ctrl button:hover { background: var(--blue); color: #fff; }
-.num-grupos-ctrl span { font-weight: 700; font-size: 1rem; min-width: 24px; text-align: center; }
+.sala-input:focus { outline: none; border-color: var(--blue-m); background: #fff; }
+.sala-input::placeholder { color: var(--muted); font-size: .85rem; letter-spacing: .05em; text-transform: none; }
+.btn-sala {
+  background: var(--blue); color: #fff; border: none; border-radius: 10px;
+  padding: .65rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: .88rem;
+  font-weight: 600; cursor: pointer; transition: background .15s; white-space: nowrap;
+}
+.btn-sala:hover { background: var(--blue-m); }
+.btn-sala.green { background: var(--green-m); }
+.btn-sala.green:hover { background: var(--green); }
+.btn-sala.orange { background: var(--orange-m); }
 
-.grupo-card {
-  background: var(--white);
-  border-radius: 16px;
+/* sala ativa */
+.sala-ativa { display: none; }
+.sala-header {
+  background: var(--blue); border-radius: 16px 16px 0 0;
+  padding: 1rem 1.5rem; color: #fff;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem;
+}
+.sala-header h3 { font-family: 'DM Serif Display', serif; font-size: 1.2rem; }
+.sala-code-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: .85rem;
+  background: rgba(255,255,255,.15); border-radius: 8px; padding: .3rem .7rem;
+  letter-spacing: .1em;
+}
+.sala-body { background: var(--white); border-radius: 0 0 16px 16px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+
+.papel-badge {
+  display: inline-block; padding: .3rem .8rem; border-radius: 20px;
+  font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em;
   margin-bottom: 1.2rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,.08);
-  overflow: hidden;
-  border: 2px solid var(--border);
-  transition: border-color .2s;
 }
-.grupo-card:focus-within { border-color: var(--blue-m); }
-.grupo-header {
-  background: var(--blue);
-  padding: .9rem 1.4rem;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.grupo-header h3 { font-family: 'DM Serif Display', serif; font-size: 1.1rem; }
-.grupo-header .char-info { font-size: .72rem; opacity: .75; font-family: 'JetBrains Mono', monospace; }
-
-.grupo-body { padding: 1.2rem 1.4rem; }
+.papel-proponente { background: var(--blue-l); color: var(--blue); }
+.papel-banca      { background: var(--orange-l); color: var(--orange); }
 
 .field-block { margin-bottom: 1.2rem; }
 .field-label {
@@ -346,63 +313,63 @@ textarea {
   min-height: 90px;
 }
 textarea:focus { outline: none; border-color: var(--blue-m); background: var(--white); }
-textarea.locked {
-  background: #FEF2F2; border-color: #FECACA; cursor: not-allowed;
-  color: var(--muted);
-}
-textarea.locked:focus { border-color: #FECACA; background: #FEF2F2; }
-
-.lock-banner {
-  background: #FEF2F2; border: 1.5px solid #FECACA;
-  border-radius: 10px; padding: .7rem 1rem;
-  font-size: .8rem; color: var(--warn); font-weight: 600;
-  display: flex; align-items: center; gap: .5rem;
-  margin-bottom: .6rem;
-}
-
-.lock-banner-instrucional {
-  background: #EFF6FF; border: 1.5px solid #BFDBFE;
-  border-radius: 10px; padding: .7rem 1rem;
-  font-size: .8rem; color: #1D4ED8; font-weight: 500;
-  margin-bottom: .6rem; line-height: 1.5;
-}
-.lock-banner-instrucional strong { display: block; font-size: .82rem; margin-bottom: .2rem; }
-
-.avaliador-select {
-  width: 100%; padding: .5rem .8rem; border-radius: 8px;
-  border: 1.5px solid var(--border); font-family: 'DM Sans', sans-serif;
-  font-size: .85rem; background: var(--bg); color: var(--ink);
-  cursor: pointer; margin-bottom: .8rem;
-}
-.avaliador-select:focus { outline: none; border-color: var(--blue-m); }
-
-.nome-grupo-wrap {
-  display: flex; align-items: center; gap: .5rem;
-  background: var(--blue-l); border-radius: 10px;
-  padding: .5rem .8rem; margin-bottom: .8rem;
-  border: 1.5px solid var(--blue-m);
-}
-.nome-grupo-wrap label {
-  font-size: .7rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: .08em; color: var(--blue); white-space: nowrap;
-}
-.nome-grupo-input {
-  flex: 1; border: none; background: transparent;
-  font-family: 'DM Sans', sans-serif; font-size: .88rem;
-  color: var(--ink); font-weight: 600;
-  outline: none;
-}
-.nome-grupo-input::placeholder { color: var(--muted); font-weight: 400; }
+textarea.readonly-tx { background: var(--blue-l); border-color: var(--blue-l); color: var(--blue); cursor: default; }
 
 .save-btn {
   background: var(--blue); color: #fff; border: none;
   border-radius: 10px; padding: .55rem 1.2rem;
   font-family: 'DM Sans', sans-serif; font-size: .85rem;
   font-weight: 600; cursor: pointer; transition: all .15s;
-  display: flex; align-items: center; gap: .4rem;
+  display: inline-flex; align-items: center; gap: .4rem;
 }
 .save-btn:hover { background: var(--blue-m); }
 .save-btn.saved { background: #22C55E; }
+
+.banca-proposta-box {
+  background: var(--blue-l); border-radius: 12px; padding: 1rem 1.2rem;
+  font-size: .85rem; line-height: 1.6; color: var(--blue); margin-bottom: 1.2rem;
+  border: 1.5px solid rgba(46,117,182,.2);
+}
+.banca-proposta-box strong { display: block; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .4rem; opacity: .7; }
+
+.sala-status { font-size: .75rem; color: var(--muted); margin-left: .6rem; }
+.sala-sair {
+  background: none; border: 1.5px solid var(--border); border-radius: 8px;
+  color: var(--muted); font-size: .78rem; padding: .3rem .7rem; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all .15s;
+}
+.sala-sair:hover { border-color: var(--warn); color: var(--warn); }
+
+/* painel coordenador */
+.coord-panel {
+  background: var(--white); border-radius: 16px; padding: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-top: 1.5rem;
+}
+.coord-panel h3 { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--blue); margin-bottom: 1rem; }
+.coord-grupo-row {
+  border: 1.5px solid var(--border); border-radius: 12px; padding: 1rem 1.2rem;
+  margin-bottom: .8rem; transition: border-color .2s;
+}
+.coord-grupo-row:hover { border-color: var(--blue-m); }
+.coord-grupo-title { font-weight: 700; font-size: .9rem; margin-bottom: .5rem; display: flex; align-items: center; gap: .6rem; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+.status-dot.filled { background: #22C55E; }
+.coord-excerpt { font-size: .78rem; color: var(--muted); font-style: italic; line-height: 1.4; }
+
+.info-banner {
+  background: var(--blue-l); border-left: 4px solid var(--blue);
+  border-radius: 0 10px 10px 0; padding: .75rem 1rem;
+  font-size: .8rem; color: var(--blue); margin-bottom: 1.2rem; line-height: 1.5;
+}
+.sala-tabs { display: flex; gap: .5rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+.sala-tab {
+  background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px;
+  padding: .4rem .9rem; font-size: .8rem; font-weight: 600; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all .15s; color: var(--muted);
+}
+.sala-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+.sala-tab-panel { display: none; }
+.sala-tab-panel.active { display: block; }
 
 /* ── QR ── */
 .qr-section {
@@ -423,103 +390,15 @@ textarea.locked:focus { border-color: #FECACA; background: #FEF2F2; }
 }
 .qr-hint { margin-top: .75rem; font-size: .78rem; color: var(--muted); }
 
-/* ── MODAL IDENTIFICAÇÃO ── */
-#modal-overlay {
-  position: fixed; inset: 0; background: rgba(15,30,50,.7);
-  z-index: 9999; display: flex; align-items: center; justify-content: center;
-  backdrop-filter: blur(4px);
-  animation: fadeIn .2s ease;
-}
-#modal-overlay.hidden { display: none; }
-#modal-box {
-  background: var(--white); border-radius: 20px;
-  padding: 2rem 2rem 1.5rem;
-  max-width: 360px; width: 90%;
-  box-shadow: 0 20px 60px rgba(0,0,0,.3);
-  text-align: center;
-}
-#modal-box h2 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.5rem; color: var(--blue); margin-bottom: .3rem;
-}
-#modal-box p { font-size: .85rem; color: var(--muted); margin-bottom: 1.4rem; line-height: 1.5; }
-#modal-grupos-list { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 1rem; }
-.modal-grupo-btn {
-  background: var(--bg); border: 2px solid var(--border);
-  border-radius: 12px; padding: .75rem 1rem;
-  font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 600;
-  cursor: pointer; transition: all .15s; color: var(--ink);
-  text-align: left; display: flex; align-items: center; gap: .7rem;
-}
-.modal-grupo-btn:hover { border-color: var(--blue-m); background: var(--blue-l); color: var(--blue); }
-.modal-grupo-btn .mg-num {
-  background: var(--blue); color: #fff; border-radius: 8px;
-  padding: .2rem .6rem; font-size: .75rem; font-weight: 700;
-}
-#identity-chip {
-  margin-left: auto; margin-right: .8rem;
-  background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
-  border-radius: 20px; padding: .3rem .9rem;
-  font-size: .75rem; color: #fff; font-weight: 600;
-  display: flex; align-items: center; gap: .4rem;
-  cursor: pointer; white-space: nowrap;
-}
-#identity-chip:hover { background: rgba(255,255,255,.25); }
-textarea.avaliador-livre {
-  background: #F0FDF4; border-color: #86EFAC; cursor: text; color: var(--ink);
-}
-textarea.avaliador-livre:focus { border-color: #538135; background: #fff; }
-
 /* ── FOOTER ── */
 footer {
   text-align: center; padding: 1.5rem; font-size: .75rem;
   color: var(--muted); border-top: 1px solid var(--border);
   margin-top: 2rem;
 }
-
-/* ── LIVE BADGE ── */
-.live-badge {
-  display: inline-flex; align-items: center; gap: .3rem;
-  background: #DCFCE7; color: #166534; border-radius: 20px;
-  padding: .2rem .7rem; font-size: .7rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .06em;
-}
-.live-dot {
-  width: 7px; height: 7px; border-radius: 50%; background: #22C55E;
-  animation: pulse 1.5s infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
-
-.offline-badge {
-  display: inline-flex; align-items: center; gap: .3rem;
-  background: #FEF3C7; color: #92400E; border-radius: 20px;
-  padding: .2rem .7rem; font-size: .7rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .06em;
-}
 </style>
 </head>
 <body>
-
-<!-- ══ BANNER: aparece enquanto Firebase não está configurado ══ -->
-<div id="firebase-config-banner">
-  ⚙️ <strong>Configure o Firebase:</strong> Edite as 6 linhas de configuração no início do &lt;script&gt; deste arquivo para ativar a sincronização em tempo real.
-  <a onclick="document.getElementById('firebase-config-banner').classList.add('hidden')">Fechar</a>
-</div>
-
-<!-- ══ STATUS de sync ══ -->
-<div id="sync-status">⟳ Sincronizando…</div>
-
-<!-- ══ MODAL IDENTIFICAÇÃO ══ -->
-<div id="modal-overlay">
-  <div id="modal-box">
-    <h2>👋 Olá! Qual é o seu grupo?</h2>
-    <p>Selecione seu grupo para que o sistema libere os campos corretos para você.</p>
-    <div id="modal-grupos-list">
-      <!-- gerado por JS -->
-    </div>
-    <p style="font-size:.72rem;color:var(--muted);">Você pode trocar depois clicando no seu nome no topo da página.</p>
-  </div>
-</div>
 
 <nav>
   <div class="brand">Práxis em Jogo</div>
@@ -528,7 +407,6 @@ footer {
   <button onclick="showSection('criterios', this)">📋 Critérios</button>
   <button onclick="showSection('grupos', this)">✍️ Grupos</button>
   <button onclick="showSection('qr', this)">📲 QR Code</button>
-  <div id="identity-chip" onclick="showModal()" title="Trocar grupo">👤 <span id="identity-label">Identificar</span></div>
 </nav>
 
 <!-- ══════════════════ HOME ══════════════════ -->
@@ -545,28 +423,28 @@ footer {
   </div>
   <div class="container">
     <div style="background:var(--white);border-radius:16px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:1.2rem;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;">
-        <h2 style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--blue);">Os 4 Atos</h2>
-        <div id="connection-badge" class="offline-badge">⚡ Modo local</div>
-      </div>
+      <h2 style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--blue);margin-bottom:1rem;">Os 4 Atos</h2>
       <div style="display:flex;flex-direction:column;gap:.7rem;">
         <div style="display:flex;gap:1rem;align-items:flex-start;">
-          <div style="background:var(--blue);color:#fff;border-radius:8px;padding:.3rem .7rem;font-size:.75rem;font-weight:700;white-space:nowrap;">Ato 1</div>
-          <div><strong>Imersão no Dilema</strong> <span style="color:var(--muted);font-size:.85rem;">· 5 min · Analógico</span><br><span style="font-size:.82rem;color:var(--muted);">Leitura e discussão do dilema em grupo, sem dispositivos.</span></div>
+          <div style="background:var(--blue);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;">1</div>
+          <div><div style="font-weight:600;font-size:.9rem;">Imersão no Dilema <span style="color:var(--muted);font-weight:400;font-size:.78rem;">· 5 min · Analógico</span></div><div style="font-size:.82rem;color:var(--muted);line-height:1.4;margin-top:.2rem;">O grupo lê a Carta de Cenário de Tensão física. Debate intenso — sem resposta óbvia.</div></div>
         </div>
         <div style="display:flex;gap:1rem;align-items:flex-start;">
-          <div style="background:var(--green);color:#fff;border-radius:8px;padding:.3rem .7rem;font-size:.75rem;font-weight:700;white-space:nowrap;">Ato 2</div>
-          <div><strong>Autoria e Registro</strong> <span style="color:var(--muted);font-size:.85rem;">· 5 min · Digital</span><br><span style="font-size:.82rem;color:var(--muted);">Cada grupo registra sua proposta pedagógica neste hub.</span></div>
+          <div style="background:var(--green);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;">2</div>
+          <div><div style="font-weight:600;font-size:.9rem;">Autoria e Registro <span style="color:var(--muted);font-weight:400;font-size:.78rem;">· 5 min · Digital</span></div><div style="font-size:.82rem;color:var(--muted);line-height:1.4;margin-top:.2rem;">O grupo registra sua proposta pedagógica aqui. Síntese obrigatória — máx. 600 caracteres.</div></div>
         </div>
         <div style="display:flex;gap:1rem;align-items:flex-start;">
-          <div style="background:var(--orange);color:#fff;border-radius:8px;padding:.3rem .7rem;font-size:.75rem;font-weight:700;white-space:nowrap;">Ato 3</div>
-          <div><strong>Leitura Crítica</strong> <span style="color:var(--muted);font-size:.85rem;">· 5 min · Híbrido</span><br><span style="font-size:.82rem;color:var(--muted);">Cada grupo lê e avalia a proposta do grupo designado.</span></div>
+          <div style="background:var(--orange);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;">3</div>
+          <div><div style="font-weight:600;font-size:.9rem;">Leitura Crítica da Prática <span style="color:var(--muted);font-weight:400;font-size:.78rem;">· 5 min · Híbrido</span></div><div style="font-size:.82rem;color:var(--muted);line-height:1.4;margin-top:.2rem;">O grupo avaliador acessa a aba Grupos, lê a proposta do outro e registra a contracorrente.</div></div>
         </div>
         <div style="display:flex;gap:1rem;align-items:flex-start;">
-          <div style="background:var(--blue-m);color:#fff;border-radius:8px;padding:.3rem .7rem;font-size:.75rem;font-weight:700;white-space:nowrap;">Ato 4</div>
-          <div><strong>Práxis e Síntese</strong> <span style="color:var(--muted);font-size:.85rem;">· 3 min · Oral</span><br><span style="font-size:.82rem;color:var(--muted);">Debate coletivo sobre as avaliações recebidas.</span></div>
+          <div style="background:var(--blue-m);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;">4</div>
+          <div><div style="font-weight:600;font-size:.9rem;">Práxis e Síntese <span style="color:var(--muted);font-weight:400;font-size:.78rem;">· 3 min · Oral</span></div><div style="font-size:.82rem;color:var(--muted);line-height:1.4;margin-top:.2rem;">O grupo proponente lê a crítica recebida e faz réplica oral explicitando o aprendizado.</div></div>
         </div>
       </div>
+    </div>
+    <div style="background:var(--blue-l);border-left:4px solid var(--blue);border-radius:0 12px 12px 0;padding:1rem 1.2rem;font-size:.85rem;color:var(--blue);line-height:1.5;">
+      <strong>Lembre-se:</strong> O jogo não é o objetivo — é o dispositivo. A reflexão não antecede a ação nem a sucede: ela ocorre simultaneamente, no tensionamento entre o que o grupo propôs e o que o outro grupo desvelou.
     </div>
   </div>
 </div>
@@ -576,7 +454,9 @@ footer {
   <div class="container">
     <div class="timer-wrap">
       <h2>⏱ Cronômetro dos Atos</h2>
-      <div class="acts-grid" id="acts-grid"></div>
+      <div class="acts-grid" id="acts-grid">
+        <!-- generated by JS -->
+      </div>
       <div class="timer-display">
         <div class="t-label">ATO ATUAL</div>
         <div class="t-name" id="t-name">Selecione um ato acima</div>
@@ -604,6 +484,7 @@ footer {
       <p style="color:var(--muted);font-size:.88rem;margin-top:.3rem;">Use estes critérios para guiar a leitura crítica da proposta do outro grupo.</p>
     </div>
     <div class="criterios-grid">
+      <!-- Critério 1 -->
       <div class="criterio-card">
         <div class="criterio-header" style="background:var(--green);">
           <div class="c-num">Critério 1</div>
@@ -629,6 +510,7 @@ footer {
           </div>
         </div>
       </div>
+      <!-- Critério 2 -->
       <div class="criterio-card">
         <div class="criterio-header" style="background:var(--orange);">
           <div class="c-num">Critério 2</div>
@@ -664,22 +546,151 @@ footer {
 <!-- ══════════════════ GRUPOS ══════════════════ -->
 <div id="grupos" class="section">
   <div class="container">
-    <div class="grupos-header">
-      <div>
-        <h2>Espaço dos Grupos</h2>
-        <p style="font-size:.82rem;color:var(--muted);margin-top:.2rem;">Ato 2: proposta · Ato 3: avaliação cruzada</p>
-      </div>
-      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
-        <div id="grupos-sync-badge" class="offline-badge">⚡ Modo local</div>
-        <div class="num-grupos-ctrl">
-          <span style="font-size:.8rem;color:var(--muted);margin-right:.3rem;">Grupos:</span>
-          <button onclick="changeGrupos(-1)">−</button>
-          <span id="num-grupos-display">3</span>
-          <button onclick="changeGrupos(1)">+</button>
+
+    <!-- TELA DE ENTRADA -->
+    <div id="sala-entrada">
+      <div class="sala-setup">
+        <h2>✍️ Espaço dos Grupos</h2>
+        <p>Cada grupo acessa pelo próprio dispositivo. Os dados ficam salvos automaticamente.</p>
+        <div class="sala-flow">
+
+          <!-- Criar sala (Coordenador) -->
+          <div style="width:100%;max-width:420px;text-align:left;">
+            <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.5rem;">🎓 Coordenador — Criar nova partida</div>
+            <div class="sala-input-row">
+              <input type="text" class="sala-input" id="input-nova-sala" maxlength="6" placeholder="Ex: PRAX01" />
+              <button class="btn-sala green" onclick="criarSala()">Criar</button>
+            </div>
+            <div style="font-size:.74rem;color:var(--muted);margin-top:.4rem;">Crie um código de 4–6 letras. Compartilhe com todos os grupos.</div>
+          </div>
+
+          <div class="sala-divider">— ou —</div>
+
+          <!-- Entrar em sala (Grupos) -->
+          <div style="width:100%;max-width:420px;text-align:left;">
+            <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.5rem;">👥 Grupo — Entrar na partida</div>
+            <div class="sala-input-row">
+              <input type="text" class="sala-input" id="input-codigo-sala" maxlength="6" placeholder="Código da sala" />
+              <select id="select-grupo" style="border:2px solid var(--border);border-radius:10px;padding:.65rem .8rem;font-family:'DM Sans',sans-serif;font-size:.88rem;background:var(--bg);color:var(--ink);cursor:pointer;">
+                <option value="">Grupo…</option>
+                <option value="1">Grupo 1</option>
+                <option value="2">Grupo 2</option>
+                <option value="3">Grupo 3</option>
+                <option value="4">Grupo 4</option>
+                <option value="5">Grupo 5</option>
+                <option value="6">Grupo 6</option>
+              </select>
+              <button class="btn-sala" onclick="entrarSala()">Entrar</button>
+            </div>
+          </div>
+
+          <div class="sala-divider">— ou —</div>
+
+          <!-- Visão coordenador -->
+          <div style="width:100%;max-width:420px;text-align:left;">
+            <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.5rem;">📊 Coordenador — Ver painel de uma sala existente</div>
+            <div class="sala-input-row">
+              <input type="text" class="sala-input" id="input-coord-sala" maxlength="6" placeholder="Código da sala" />
+              <button class="btn-sala orange" onclick="abrirCoord()">Ver Painel</button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
-    <div id="grupos-container"></div>
+
+    <!-- SALA GRUPO (Atos 2 e 3) -->
+    <div id="sala-grupo-view" class="sala-ativa">
+      <div style="margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+        <div>
+          <span id="sala-grupo-titulo" style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--blue);">Grupo —</span>
+          <span class="sala-code-badge" style="background:var(--blue-l);color:var(--blue);border-radius:8px;padding:.2rem .6rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;margin-left:.5rem;" id="sala-code-label">SALA</span>
+        </div>
+        <button class="sala-sair" onclick="sairSala()">← Sair</button>
+      </div>
+
+      <div class="sala-tabs">
+        <button class="sala-tab active" onclick="abrirTab('ato2', this)">✍️ Ato 2 — Proposta</button>
+        <button class="sala-tab" onclick="abrirTab('ato3', this)">🔍 Ato 3 — Avaliação</button>
+      </div>
+
+      <!-- ATO 2 -->
+      <div id="tab-ato2" class="sala-tab-panel active">
+        <div class="info-banner">
+          <strong>Ato 2 · 5 min · Digital</strong> — Registre a proposta pedagógica do grupo. Explique como a solução supera a visão tecnicista e cria condições para a ludicidade autêntica.
+        </div>
+        <div class="field-block">
+          <div class="field-label">
+            <span>Proposta Pedagógica</span>
+            <span class="char-count" id="prop-count">0/600</span>
+          </div>
+          <textarea id="tx-proposta" maxlength="600" rows="7"
+            placeholder="Descreva sua proposta. Como ela supera o tecnicismo? Como cria condições para a ludicidade autêntica (Luckesi)? Como a tecnologia é meio de expressão, não fim instrumental? Máx. 600 caracteres."
+            oninput="onTxInput('proposta', this, 600, 'prop-count')"></textarea>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem;">
+          <button class="save-btn" id="save-proposta" onclick="salvarCampo('proposta')">💾 Salvar</button>
+          <span class="sala-status" id="status-proposta"></span>
+        </div>
+      </div>
+
+      <!-- ATO 3 -->
+      <div id="tab-ato3" class="sala-tab-panel">
+        <div class="info-banner">
+          <strong>Ato 3 · 5 min · Híbrido</strong> — Digite aqui o código do grupo que você vai avaliar para ver a proposta dele, e depois escreva a contracorrente avaliativa usando os critérios da Cartilha Teórica.
+        </div>
+        <div style="display:flex;gap:.6rem;margin-bottom:1rem;align-items:flex-end;flex-wrap:wrap;">
+          <div style="flex:1;min-width:180px;">
+            <div class="field-label">Grupo a avaliar</div>
+            <select id="select-grupo-alvo" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:.65rem .9rem;font-family:'DM Sans',sans-serif;font-size:.88rem;background:var(--bg);color:var(--ink);">
+              <option value="">— Selecione —</option>
+              <option value="1">Grupo 1</option>
+              <option value="2">Grupo 2</option>
+              <option value="3">Grupo 3</option>
+              <option value="4">Grupo 4</option>
+              <option value="5">Grupo 5</option>
+              <option value="6">Grupo 6</option>
+            </select>
+          </div>
+          <button class="btn-sala" onclick="carregarProposta()" style="padding:.65rem 1rem;">Carregar</button>
+        </div>
+        <div id="proposta-alvo-box" style="display:none;" class="banca-proposta-box">
+          <strong>Proposta do grupo avaliado</strong>
+          <span id="proposta-alvo-texto"></span>
+        </div>
+        <div id="proposta-alvo-vazia" style="display:none;font-size:.82rem;color:var(--muted);font-style:italic;margin-bottom:1rem;">
+          Esse grupo ainda não registrou a proposta. Aguarde ou recarregue.
+        </div>
+        <div class="field-block">
+          <div class="field-label">
+            <span>Contracorrente Avaliativa</span>
+            <span class="char-count" id="aval-count">0/500</span>
+          </div>
+          <textarea id="tx-avaliacao" maxlength="500" rows="6"
+            placeholder="Aplique os 2 critérios da Cartilha Teórica:&#10;1. A proposta gerou ludicidade autêntica ou foi apenas adereço?&#10;2. A tecnologia foi crítica e dialógica ou puramente instrumental?&#10;Máx. 500 caracteres."
+            oninput="onTxInput('avaliacao', this, 500, 'aval-count')"></textarea>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem;">
+          <button class="save-btn" id="save-avaliacao" onclick="salvarCampo('avaliacao')">💾 Salvar</button>
+          <span class="sala-status" id="status-avaliacao"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAINEL COORDENADOR -->
+    <div id="sala-coord-view" class="sala-ativa">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:.5rem;">
+        <div style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--blue);">
+          📊 Painel Coordenador — <span id="coord-sala-label" style="font-family:'JetBrains Mono',monospace;font-size:1rem;"></span>
+        </div>
+        <div style="display:flex;gap:.5rem;">
+          <button class="btn-sala" onclick="atualizarCoord()" style="background:var(--green-m);padding:.5rem 1rem;font-size:.82rem;">↺ Atualizar</button>
+          <button class="sala-sair" onclick="sairSala()">← Sair</button>
+        </div>
+      </div>
+      <div id="coord-grupos-list"></div>
+    </div>
+
   </div>
 </div>
 
@@ -688,8 +699,10 @@ footer {
   <div class="container">
     <div class="qr-section">
       <h2>📲 QR Code de Acesso</h2>
+      <p>Imprima e cole na mesa central. Qualquer participante escaneia para acessar este hub.</p>
       <canvas id="qr-canvas" width="220" height="220"></canvas>
       <div class="qr-url-box" id="qr-url-text">Carregando URL...</div>
+      <p class="qr-hint">💡 Para usar em sala: hospede este arquivo em qualquer servidor ou Google Drive público e atualize o link acima.</p>
       <button onclick="downloadQR()" style="margin-top:1rem;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:.6rem 1.4rem;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;">⬇ Baixar QR Code</button>
     </div>
   </div>
@@ -697,73 +710,56 @@ footer {
 
 <footer>Práxis em Jogo · Problema 10 — Ludicidade, Tecnologia e Ensino · Material de uso livre para fins pedagógicos</footer>
 
-<!-- Firebase SDK -->
+<!-- QR Code lib -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- Firebase -->
 <script type="module">
-// ══════════════════════════════════════════════════════════
-//  🔧 COLE AQUI SUA CONFIGURAÇÃO DO FIREBASE
-//  Obtenha em: console.firebase.google.com → seu projeto
-//  → Configurações do projeto → Seus aplicativos → SDK
-// ══════════════════════════════════════════════════════════
+import { initializeApp }                          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue, off } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// ── CONFIG ──────────────────────────────────────────────────
 const firebaseConfig = {
-  apiKey: "AIzaSyD5FjU9rG_gjV_qVxS2Qg6Fi13oDj5yb-I",
-  authDomain: "praxis-em-jogo.firebaseapp.com",
-  databaseURL: "https://praxis-em-jogo-default-rtdb.firebaseio.com",
-  projectId: "praxis-em-jogo",
-  storageBucket: "praxis-em-jogo.firebasestorage.app",
+  apiKey:            "AIzaSyD5FjU9rG_gjV_qVxS2Qg6Fi13oDj5yb-I",
+  authDomain:        "praxis-em-jogo.firebaseapp.com",
+  databaseURL:       "https://praxis-em-jogo-default-rtdb.firebaseio.com",
+  projectId:         "praxis-em-jogo",
+  storageBucket:     "praxis-em-jogo.firebasestorage.app",
   messagingSenderId: "204579870609",
-  appId: "1:204579870609:web:d1f7145ea3015e52346c30",
-  measurementId: "G-BQ8GDWRVFW"
+  appId:             "1:204579870609:web:d1f7145ea3015e52346c30"
 };
-// ══════════════════════════════════════════════════════════
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
 
-import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue, update, set, get }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+// ── ESTADO ──────────────────────────────────────────────────
+let salaAtual  = null;
+let grupoAtual = null;
+let modoAtual  = null;
+let coordListener = null;
 
-// ── detecta se config foi preenchida ──
-const configured = firebaseConfig.apiKey !== "COLE_AQUI";
-let db = null;
+// ── PATHS ────────────────────────────────────────────────────
+const pathSala      = s       => `salas/${s}/meta`;
+const pathProposta  = (s, g)  => `salas/${s}/grupos/${g}/proposta`;
+const pathAvaliacao = (s, g)  => `salas/${s}/grupos/${g}/avaliacao`;
+const pathGrupo     = (s, g)  => `salas/${s}/grupos/${g}`;
+const pathTodosGrupos = s     => `salas/${s}/grupos`;
 
-if (configured) {
-  try {
-    const app = initializeApp(firebaseConfig);
-    db = getDatabase(app);
-    document.getElementById('firebase-config-banner').classList.add('hidden');
-    // atualiza badges
-    document.getElementById('connection-badge').className = 'live-badge';
-    document.getElementById('connection-badge').innerHTML = '<div class="live-dot"></div> Ao vivo';
-    document.getElementById('grupos-sync-badge').className = 'live-badge';
-    document.getElementById('grupos-sync-badge').innerHTML = '<div class="live-dot"></div> Sincronizado';
-  } catch(e) {
-    console.error('Firebase init error:', e);
-  }
-}
-
-// ══════════ NAV ══════════
-window.showSection = function(id, btn) {
+// ── NAV ──────────────────────────────────────────────────────
+function showSection(id, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if (btn) btn.classList.add('active');
-};
-
-// ══════════ SYNC STATUS ══════════
-function showSync(msg, type = '') {
-  const el = document.getElementById('sync-status');
-  el.textContent = msg;
-  el.className = 'show ' + type;
-  clearTimeout(el._t);
-  el._t = setTimeout(() => { el.className = ''; }, 2500);
 }
+window.showSection = showSection;
 
-// ══════════ TIMER ══════════
+// ── TIMER ────────────────────────────────────────────────────
 const ACTS = [
   { num: 1, name: 'Imersão no Dilema',  secs: 300, mode: 'Analógico', color: '#1F4E79' },
   { num: 2, name: 'Autoria e Registro', secs: 300, mode: 'Digital',   color: '#375623' },
   { num: 3, name: 'Leitura Crítica',    secs: 300, mode: 'Híbrido',   color: '#7B2D00' },
   { num: 4, name: 'Práxis e Síntese',   secs: 180, mode: 'Oral',      color: '#2E75B6' },
 ];
-
 let currentAct = null, remaining = 0, totalSecs = 0, timerInterval = null, running = false;
 
 function buildActsGrid() {
@@ -772,6 +768,7 @@ function buildActsGrid() {
   ACTS.forEach((a, i) => {
     const b = document.createElement('button');
     b.className = 'act-btn';
+    b.id = 'act-btn-' + i;
     b.innerHTML = `<div class="act-num">Ato ${a.num}</div>
       <div class="act-name">${a.name}</div>
       <div class="act-time">${Math.floor(a.secs/60)}:00</div>
@@ -780,12 +777,9 @@ function buildActsGrid() {
     grid.appendChild(b);
   });
 }
-
 function selectAct(i) {
   timerReset();
-  currentAct = i;
-  remaining = ACTS[i].secs;
-  totalSecs  = ACTS[i].secs;
+  currentAct = i; remaining = ACTS[i].secs; totalSecs = ACTS[i].secs;
   document.getElementById('t-name').textContent = `Ato ${ACTS[i].num} — ${ACTS[i].name}`;
   document.getElementById('t-clock').textContent = formatTime(remaining);
   document.getElementById('t-clock').className = 't-clock';
@@ -793,12 +787,10 @@ function selectAct(i) {
   document.getElementById('t-bar').style.background = '#60A5FA';
   document.querySelectorAll('.act-btn').forEach((b,j) => b.classList.toggle('running', j===i));
 }
-
 function formatTime(s) {
   return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
 }
-
-window.timerStart = function() {
+function timerStart() {
   if (currentAct === null) { alert('Selecione um ato primeiro.'); return; }
   if (remaining <= 0) return;
   running = true;
@@ -811,7 +803,7 @@ window.timerStart = function() {
     clock.textContent = formatTime(remaining);
     const pct = (remaining / totalSecs) * 100;
     bar.style.width = pct + '%';
-    if (remaining <= 30) { clock.className = 't-clock urgent'; bar.style.background = '#F87171'; }
+    if (remaining <= 30)      { clock.className = 't-clock urgent'; bar.style.background = '#F87171'; }
     else if (remaining <= 60) { bar.style.background = '#FBBF24'; }
     if (remaining <= 0) {
       clearInterval(timerInterval); running = false;
@@ -830,15 +822,13 @@ window.timerStart = function() {
       } catch(e){}
     }
   }, 1000);
-};
-
-window.timerPause = function() {
+}
+function timerPause() {
   clearInterval(timerInterval); running = false;
   document.getElementById('btn-start').style.display = 'inline-flex';
   document.getElementById('btn-pause').style.display = 'none';
-};
-
-window.timerReset = function() {
+}
+function timerReset() {
   clearInterval(timerInterval); running = false;
   if (currentAct !== null) {
     remaining = ACTS[currentAct].secs;
@@ -849,260 +839,13 @@ window.timerReset = function() {
   }
   document.getElementById('btn-start').style.display = 'inline-flex';
   document.getElementById('btn-pause').style.display = 'none';
-};
-
+}
+window.timerStart = timerStart;
+window.timerPause = timerPause;
+window.timerReset = timerReset;
 buildActsGrid();
 
-// ══════════ GRUPOS ══════════
-let numGrupos = 3;
-const MAX_PROPOSTA = 600;
-const MAX_AVAL     = 500;
-const gruposData   = {};
-let _remoteListener = null;
-let _suppressRemote = false;
-let meuGrupo = null; // número do grupo deste dispositivo
-
-// ── Modal de identificação ──
-function showModal() {
-  const list = document.getElementById('modal-grupos-list');
-  list.innerHTML = '';
-  for (let i = 1; i <= numGrupos; i++) {
-    const nome = nomeGrupo(i);
-    const btn = document.createElement('button');
-    btn.className = 'modal-grupo-btn';
-    btn.innerHTML = `<span class="mg-num">Grupo ${i}</span> ${nome !== `Grupo ${i}` ? nome : '<em style="color:var(--muted);font-weight:400">sem nome definido</em>'}`;
-    btn.onclick = () => identificar(i);
-    list.appendChild(btn);
-  }
-  document.getElementById('modal-overlay').classList.remove('hidden');
-}
-
-function identificar(i) {
-  meuGrupo = i;
-  document.getElementById('modal-overlay').classList.add('hidden');
-  document.getElementById('identity-label').textContent = nomeGrupo(i);
-  buildGrupos();
-}
-
-window.showModal = showModal;
-window.identificar = identificar;
-
-function nomeGrupo(i) {
-  const d = gruposData[i];
-  return (d && d.nome && d.nome.trim()) ? d.nome.trim() : `Grupo ${i}`;
-}
-
-// ── Escuta o Firebase e atualiza UI quando outro dispositivo altera ──
-let _primeiraVez = true;
-function startRemoteListener() {
-  if (!db) {
-    // sem Firebase: mostra modal imediatamente com os grupos padrão
-    buildGrupos();
-    showModal();
-    return;
-  }
-  if (_remoteListener) _remoteListener();
-  const r = ref(db, 'praxis/sessao');
-  _remoteListener = onValue(r, snap => {
-    if (_suppressRemote) return;
-    const data = snap.val();
-    if (data) {
-      if (data.numGrupos) {
-        numGrupos = data.numGrupos;
-        document.getElementById('num-grupos-display').textContent = numGrupos;
-      }
-      if (data.grupos) {
-        Object.entries(data.grupos).forEach(([k, v]) => {
-          const i = Number(k);
-          if (!gruposData[i]) gruposData[i] = { nome:'', proposta:'', avaliador:'', avaliacao:'' };
-          Object.assign(gruposData[i], v);
-        });
-      }
-    }
-    buildGrupos();
-    if (meuGrupo) document.getElementById('identity-label').textContent = nomeGrupo(meuGrupo);
-    // mostra modal só na primeira carga, e só se ainda não identificado
-    if (_primeiraVez && !meuGrupo) {
-      _primeiraVez = false;
-      showModal();
-    } else {
-      _primeiraVez = false;
-      showSync('✓ Atualizado', 'ok');
-    }
-  });
-}
-
-// ── Salva no Firebase (debounced) ──
-const _debounce = {};
-function saveToFirebase(grupoIdx) {
-  if (!db) return;
-  clearTimeout(_debounce[grupoIdx]);
-  _debounce[grupoIdx] = setTimeout(async () => {
-    showSync('⟳ Sincronizando…');
-    _suppressRemote = true;
-    try {
-      const updates = {};
-      updates[`praxis/sessao/numGrupos`] = numGrupos;
-      updates[`praxis/sessao/grupos/${grupoIdx}`] = gruposData[grupoIdx];
-      await update(ref(db), updates);
-      showSync('✓ Salvo na nuvem', 'ok');
-    } catch(e) {
-      showSync('✗ Erro ao salvar', 'error');
-      console.error(e);
-    }
-    setTimeout(() => { _suppressRemote = false; }, 500);
-  }, 600);
-}
-
-window.changeGrupos = function(delta) {
-  numGrupos = Math.max(2, Math.min(6, numGrupos + delta));
-  document.getElementById('num-grupos-display').textContent = numGrupos;
-  buildGrupos();
-  if (db) {
-    update(ref(db), { 'praxis/sessao/numGrupos': numGrupos }).catch(console.error);
-  }
-};
-
-function buildGrupos() {
-  const container = document.getElementById('grupos-container');
-  container.innerHTML = '';
-  for (let i = 1; i <= numGrupos; i++) {
-    if (!gruposData[i]) gruposData[i] = { nome:'', proposta:'', avaliador:'', avaliacao:'' };
-    container.appendChild(makeGrupoCard(i));
-  }
-}
-
-function makeGrupoCard(i) {
-  const d = gruposData[i];
-  const div = document.createElement('div');
-  div.className = 'grupo-card';
-  div.id = 'grupo-card-' + i;
-
-  let opts = '<option value="">— Selecione o grupo avaliador —</option>';
-  for (let j = 1; j <= numGrupos; j++) {
-    if (j !== i) {
-      const label = nomeGrupo(j);
-      opts += `<option value="${j}" ${d.avaliador==j?'selected':''}>${label} avaliará este espaço</option>`;
-    }
-  }
-
-  const propLen   = (d.proposta||'').length;
-  const avalLen   = (d.avaliacao||'').length;
-  const propClass = propLen > MAX_PROPOSTA ? 'over' : propLen > MAX_PROPOSTA*0.85 ? 'near' : '';
-  const avalClass = avalLen > MAX_AVAL     ? 'over' : avalLen > MAX_AVAL*0.85     ? 'near' : '';
-  const nomeAtual = nomeGrupo(i);
-  const nomeAval  = d.avaliador ? nomeGrupo(Number(d.avaliador)) : '';
-
-  // Permissões baseadas em quem está no dispositivo
-  const souDono      = meuGrupo === i;                          // dono do card
-  const souAvaliador = d.avaliador && meuGrupo === Number(d.avaliador); // designado p/ avaliar
-  const avaliadorDefinido = !!d.avaliador;
-
-  // Campo proposta: editável só pelo dono
-  const propostaReadonly = !souDono;
-
-  // Campo avaliação: editável só pelo avaliador designado
-  const avalReadonly = !souAvaliador;
-
-  // Classe visual do campo avaliação
-  let avalClass2 = '';
-  if (souAvaliador)        avalClass2 = 'avaliador-livre';
-  else if (avaliadorDefinido) avalClass2 = 'locked';
-
-  // Placeholder do campo avaliação
-  let avalPlaceholder = `Aplique os 2 critérios da Cartilha Teórica. Máx. ${MAX_AVAL} caracteres.`;
-  if (avaliadorDefinido && !souAvaliador) avalPlaceholder = `Aguardando ${nomeAval} preencher…`;
-  if (souAvaliador) avalPlaceholder = `Você é o avaliador! Aplique os 2 critérios. Máx. ${MAX_AVAL} caracteres.`;
-
-  div.innerHTML = `
-    <div class="grupo-header">
-      <h3>Grupo ${i}${d.nome && d.nome.trim() ? ' — ' + d.nome.trim() : ''}</h3>
-      <span class="char-info">Ato 2: máx ${MAX_PROPOSTA} · Ato 3: máx ${MAX_AVAL}</span>
-    </div>
-    <div class="grupo-body">
-      <div class="nome-grupo-wrap">
-        <label for="nome-${i}">🏷 Nome do grupo:</label>
-        <input class="nome-grupo-input" id="nome-${i}" type="text" maxlength="40"
-          placeholder="Ex: Os Ludens, Equipe Alpha…"
-          value="${d.nome||''}"
-          ${propostaReadonly ? 'readonly style="cursor:not-allowed;opacity:.7"' : ''}
-          oninput="updateNome(${i}, this.value)" />
-      </div>
-
-      <div class="field-block">
-        <div class="field-label">
-          <span>✍️ ATO 2 — Proposta Pedagógica <em style="font-weight:400;color:var(--muted)">(${nomeAtual} preenche)</em></span>
-          <span class="char-count ${propClass}" id="prop-count-${i}">${propLen}/${MAX_PROPOSTA}</span>
-        </div>
-        <textarea id="proposta-${i}" maxlength="${MAX_PROPOSTA}" rows="5"
-          ${propostaReadonly ? 'readonly class="locked"' : ''}
-          placeholder="${propostaReadonly ? 'Proposta do ' + nomeAtual : 'Descreva sua proposta pedagógica. Máx. ' + MAX_PROPOSTA + ' caracteres.'}"
-          oninput="updateField(${i},'proposta',this.value)">${d.proposta||''}</textarea>
-      </div>
-
-      <div class="field-block" style="margin-top:1rem;padding-top:1rem;border-top:1.5px dashed var(--border);">
-        <div class="field-label" style="color:var(--orange-m);">
-          🔒 ATO 3 — Contracorrente Avaliativa
-        </div>
-        ${souDono ? `<select class="avaliador-select" onchange="updateAvaliador(${i}, this.value)">${opts}</select>` : avaliadorDefinido ? `<div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem;">Avaliador designado: <strong style="color:var(--blue)">${nomeAval}</strong></div>` : `<div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem;">Aguardando ${nomeAtual} designar o avaliador…</div>`}
-        ${avaliadorDefinido && !souAvaliador && !souDono ? `<div class="lock-banner">🚫 Este espaço é para <strong>${nomeAval}</strong> preencher.</div>` : ''}
-        ${souAvaliador ? `<div class="lock-banner-instrucional"><strong>✅ Você (${nomeGrupo(meuGrupo)}) é o avaliador deste espaço!</strong> Leia a proposta acima e preencha sua avaliação abaixo usando os critérios da aba 📋 Critérios.</div>` : ''}
-        ${avaliadorDefinido && souDono ? `<div class="lock-banner">🚫 PARE — Este espaço será preenchido por <strong>${nomeAval}</strong> no Ato 3. Não edite aqui.</div>` : ''}
-        <div class="field-label">
-          <span>Avaliação <em style="font-weight:400;color:var(--muted)">(${avaliadorDefinido ? nomeAval : 'grupo avaliador'} preenche)</em></span>
-          <span class="char-count ${avalClass}" id="aval-count-${i}">${avalLen}/${MAX_AVAL}</span>
-        </div>
-        <textarea id="avaliacao-${i}" maxlength="${MAX_AVAL}" rows="4"
-          class="${avalClass2}"
-          ${avalReadonly ? 'readonly' : ''}
-          placeholder="${avalPlaceholder}"
-          oninput="updateField(${i},'avaliacao',this.value)">${d.avaliacao||''}</textarea>
-      </div>
-
-      <div style="display:flex;gap:.6rem;margin-top:.8rem;align-items:center;">
-        ${souDono || souAvaliador ? `<button class="save-btn" id="save-btn-${i}" onclick="saveGrupo(${i})">💾 Salvar</button>` : ''}
-        <span style="font-size:.75rem;color:var(--muted)" id="save-status-${i}"></span>
-      </div>
-    </div>`;
-  return div;
-}
-
-window.updateNome = function(i, val) {
-  gruposData[i].nome = val;
-  buildGrupos();
-  const el = document.getElementById('nome-' + i);
-  if (el) { el.focus(); el.setSelectionRange(val.length, val.length); }
-  saveToFirebase(i);
-};
-
-window.updateField = function(i, field, val) {
-  gruposData[i][field] = val;
-  const maxLen = field === 'proposta' ? MAX_PROPOSTA : MAX_AVAL;
-  const len    = val.length;
-  const el     = document.getElementById((field==='proposta'?'prop':'aval')+'-count-'+i);
-  if (el) { el.textContent = `${len}/${maxLen}`; el.className = 'char-count ' + (len > maxLen ? 'over' : len > maxLen*0.85 ? 'near' : ''); }
-  saveToFirebase(i);
-};
-
-window.updateAvaliador = function(i, val) {
-  gruposData[i].avaliador = val;
-  buildGrupos();
-  saveToFirebase(i);
-};
-
-window.saveGrupo = function(i) {
-  const btn = document.getElementById('save-btn-' + i);
-  btn.textContent = '✅ Salvo!';
-  btn.classList.add('saved');
-  document.getElementById('save-status-' + i).textContent = 'Salvo às ' + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  setTimeout(() => { btn.textContent = '💾 Salvar'; btn.classList.remove('saved'); }, 2000);
-  saveToFirebase(i);
-};
-
-buildGrupos();
-startRemoteListener();
-
-// ══════════ QR CODE ══════════
+// ── QR CODE ──────────────────────────────────────────────────
 function buildQR() {
   const url = window.location.href;
   document.getElementById('qr-url-text').textContent = url;
@@ -1125,23 +868,213 @@ function buildQR() {
   } catch(e) {
     ctx.fillStyle = '#1F4E79'; ctx.fillRect(0,0,220,220);
     ctx.fillStyle = '#fff'; ctx.font = '13px DM Sans'; ctx.textAlign = 'center';
-    ctx.fillText('Abra no navegador', 110, 100); ctx.fillText('para gerar o QR', 110, 118);
+    ctx.fillText('Abra no navegador', 110, 105); ctx.fillText('para gerar o QR', 110, 125);
     tmp.remove();
   }
 }
-
-window.downloadQR = function() {
-  const canvas = document.getElementById('qr-canvas');
+function downloadQR() {
   const a = document.createElement('a');
   a.download = 'QRCode_Praxis_em_Jogo.png';
-  a.href = canvas.toDataURL('image/png');
+  a.href = document.getElementById('qr-canvas').toDataURL('image/png');
   a.click();
-};
-
+}
+window.downloadQR = downloadQR;
 buildQR();
-</script>
 
-<!-- QR Code lib (carregada depois do module) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+// ══════════════════════════════════════════════════════════════
+// ── GRUPOS — Firebase Realtime Database ───────────────────────
+// ══════════════════════════════════════════════════════════════
+
+// ── CRIAR SALA ───────────────────────────────────────────────
+async function criarSala() {
+  const code = document.getElementById('input-nova-sala').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if (code.length < 2) { alert('Digite um código de 2 a 6 letras/números.'); return; }
+  try {
+    await set(ref(db, pathSala(code)), { criado: new Date().toISOString() });
+    document.getElementById('input-nova-sala').value = '';
+    alert(`✅ Sala "${code}" criada!\n\nCompartilhe este código com os grupos.`);
+  } catch(e) {
+    alert('Erro ao criar sala: ' + e.message);
+  }
+}
+window.criarSala = criarSala;
+
+// ── ENTRAR EM SALA (Grupo) ────────────────────────────────────
+async function entrarSala() {
+  const code  = document.getElementById('input-codigo-sala').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  const grupo = document.getElementById('select-grupo').value;
+  if (!code)  { alert('Digite o código da sala.'); return; }
+  if (!grupo) { alert('Selecione o número do seu grupo.'); return; }
+
+  // verificar existência
+  const snapMeta = await get(ref(db, pathSala(code)));
+  if (!snapMeta.exists()) {
+    alert(`Sala "${code}" não encontrada.\nPeça ao coordenador para criar a sala primeiro.`);
+    return;
+  }
+
+  salaAtual  = code;
+  grupoAtual = grupo;
+  modoAtual  = 'grupo';
+
+  // carregar dados salvos
+  const snap = await get(ref(db, pathGrupo(code, grupo)));
+  const dados = snap.exists() ? snap.val() : {};
+  const proposta  = dados.proposta  || '';
+  const avaliacao = dados.avaliacao || '';
+
+  document.getElementById('tx-proposta').value  = proposta;
+  document.getElementById('tx-avaliacao').value = avaliacao;
+  atualizarContador(proposta,  600, 'prop-count');
+  atualizarContador(avaliacao, 500, 'aval-count');
+
+  document.getElementById('sala-grupo-titulo').textContent = `Grupo ${grupo}`;
+  document.getElementById('sala-code-label').textContent   = code;
+
+  mostrarView('grupo');
+}
+window.entrarSala = entrarSala;
+
+// ── ABRIR PAINEL COORDENADOR ──────────────────────────────────
+async function abrirCoord() {
+  const code = document.getElementById('input-coord-sala').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if (!code) { alert('Digite o código da sala.'); return; }
+  const snapMeta = await get(ref(db, pathSala(code)));
+  if (!snapMeta.exists()) { alert(`Sala "${code}" não encontrada.`); return; }
+
+  salaAtual = code;
+  modoAtual = 'coord';
+  document.getElementById('coord-sala-label').textContent = code;
+  mostrarView('coord');
+  iniciarListenerCoord();
+}
+window.abrirCoord = abrirCoord;
+
+function iniciarListenerCoord() {
+  if (coordListener) off(ref(db, pathTodosGrupos(salaAtual)), 'value', coordListener);
+  coordListener = onValue(ref(db, pathTodosGrupos(salaAtual)), snap => {
+    renderCoord(snap.exists() ? snap.val() : {});
+  });
+}
+
+function renderCoord(dados) {
+  const list = document.getElementById('coord-grupos-list');
+  const grupos = Object.keys(dados);
+  if (!grupos.length) {
+    list.innerHTML = '<div style="font-size:.85rem;color:var(--muted);text-align:center;padding:2rem;">Nenhum grupo registrou dados ainda.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  grupos.sort().forEach(g => {
+    const { proposta, avaliacao } = dados[g] || {};
+    const div = document.createElement('div');
+    div.className = 'coord-grupo-row';
+    div.innerHTML = `
+      <div class="coord-grupo-title">
+        <span class="status-dot ${proposta ? 'filled' : ''}"></span>
+        Grupo ${g}
+        <span style="font-size:.72rem;color:var(--muted);font-weight:400;">
+          ${proposta  ? '✅ Proposta'  : '⏳ Sem proposta'} &nbsp;·&nbsp;
+          ${avaliacao ? '✅ Avaliação' : '⏳ Sem avaliação'}
+        </span>
+      </div>
+      ${proposta  ? `<div class="coord-excerpt">Proposta: ${proposta.substring(0,140)}${proposta.length>140?'…':''}</div>` : ''}
+      ${avaliacao ? `<div class="coord-excerpt" style="margin-top:.3rem;">Avaliação: ${avaliacao.substring(0,120)}${avaliacao.length>120?'…':''}</div>` : ''}
+    `;
+    list.appendChild(div);
+  });
+}
+
+async function atualizarCoord() {
+  if (!salaAtual) return;
+  const snap = await get(ref(db, pathTodosGrupos(salaAtual)));
+  renderCoord(snap.exists() ? snap.val() : {});
+}
+window.atualizarCoord = atualizarCoord;
+
+// ── CARREGAR PROPOSTA DO GRUPO ALVO (Ato 3) ──────────────────
+async function carregarProposta() {
+  const alvo = document.getElementById('select-grupo-alvo').value;
+  if (!alvo) { alert('Selecione o grupo a avaliar.'); return; }
+  if (alvo == grupoAtual) { alert('Você não pode avaliar o próprio grupo.'); return; }
+
+  const boxShow  = document.getElementById('proposta-alvo-box');
+  const boxVazia = document.getElementById('proposta-alvo-vazia');
+  const textoEl  = document.getElementById('proposta-alvo-texto');
+
+  const snap = await get(ref(db, pathProposta(salaAtual, alvo)));
+  const txt  = snap.exists() ? snap.val() : null;
+  if (txt && txt.trim()) {
+    textoEl.textContent    = txt;
+    boxShow.style.display  = 'block';
+    boxVazia.style.display = 'none';
+  } else {
+    boxShow.style.display  = 'none';
+    boxVazia.style.display = 'block';
+  }
+}
+window.carregarProposta = carregarProposta;
+
+// ── SALVAR CAMPO ──────────────────────────────────────────────
+async function salvarCampo(campo) {
+  const tx     = document.getElementById('tx-' + campo);
+  const btn    = document.getElementById('save-' + campo);
+  const status = document.getElementById('status-' + campo);
+  const path   = campo === 'proposta'
+    ? pathProposta(salaAtual, grupoAtual)
+    : pathAvaliacao(salaAtual, grupoAtual);
+
+  btn.textContent = '⏳ Salvando...';
+  try {
+    await set(ref(db, path), tx.value);
+    btn.textContent = '✅ Salvo!';
+    btn.classList.add('saved');
+    status.textContent = 'Salvo às ' + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    setTimeout(() => { btn.textContent = '💾 Salvar'; btn.classList.remove('saved'); }, 2500);
+  } catch(e) {
+    btn.textContent = '💾 Salvar';
+    alert('Erro ao salvar: ' + e.message);
+  }
+}
+window.salvarCampo = salvarCampo;
+
+// ── UTILITÁRIOS ───────────────────────────────────────────────
+function onTxInput(campo, el, max, countId) {
+  atualizarContador(el.value, max, countId);
+}
+function atualizarContador(val, max, countId) {
+  const len = val.length;
+  const el  = document.getElementById(countId);
+  if (!el) return;
+  el.textContent = `${len}/${max}`;
+  el.className   = 'char-count ' + (len > max ? 'over' : len > max*0.85 ? 'near' : '');
+}
+function abrirTab(id, btn) {
+  document.querySelectorAll('.sala-tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sala-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+function sairSala() {
+  if (coordListener) { off(ref(db, pathTodosGrupos(salaAtual)), 'value', coordListener); coordListener = null; }
+  salaAtual = null; grupoAtual = null; modoAtual = null;
+  document.getElementById('tx-proposta').value  = '';
+  document.getElementById('tx-avaliacao').value = '';
+  document.getElementById('proposta-alvo-box').style.display  = 'none';
+  document.getElementById('proposta-alvo-vazia').style.display = 'none';
+  mostrarView(null);
+  abrirTab('ato2', document.querySelector('.sala-tab'));
+}
+function mostrarView(modo) {
+  document.getElementById('sala-entrada').style.display    = (!modo)      ? 'block' : 'none';
+  document.getElementById('sala-grupo-view').style.display = (modo==='grupo') ? 'block' : 'none';
+  document.getElementById('sala-coord-view').style.display = (modo==='coord') ? 'block' : 'none';
+}
+
+window.onTxInput        = onTxInput;
+window.abrirTab         = abrirTab;
+window.sairSala         = sairSala;
+
+</script>
 </body>
 </html>
