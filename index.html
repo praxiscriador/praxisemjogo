@@ -413,6 +413,7 @@ textarea.locked:focus { border-color: #FECACA; background: #FEF2F2; }
   text-align: center;
 }
 .qr-section h2 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--blue); margin-bottom: .5rem; }
+.qr-section p  { color: var(--muted); font-size: .88rem; margin-bottom: 1.5rem; }
 #qr-canvas { border-radius: 12px; border: 3px solid var(--blue-l); }
 .qr-url-box {
   margin-top: 1rem; background: var(--bg); border-radius: 10px;
@@ -885,35 +886,49 @@ function identificar(i) {
 
 window.showModal = showModal;
 window.identificar = identificar;
+
+function nomeGrupo(i) {
   const d = gruposData[i];
   return (d && d.nome && d.nome.trim()) ? d.nome.trim() : `Grupo ${i}`;
 }
 
 // ── Escuta o Firebase e atualiza UI quando outro dispositivo altera ──
+let _primeiraVez = true;
 function startRemoteListener() {
-  if (!db) return;
-  if (_remoteListener) _remoteListener(); // cancela listener anterior
+  if (!db) {
+    // sem Firebase: mostra modal imediatamente com os grupos padrão
+    buildGrupos();
+    showModal();
+    return;
+  }
+  if (_remoteListener) _remoteListener();
   const r = ref(db, 'praxis/sessao');
   _remoteListener = onValue(r, snap => {
     if (_suppressRemote) return;
     const data = snap.val();
-    if (!data) return;
-    // atualiza numGrupos se mudou remotamente
-    if (data.numGrupos && data.numGrupos !== numGrupos) {
-      numGrupos = data.numGrupos;
-      document.getElementById('num-grupos-display').textContent = numGrupos;
-    }
-    // atualiza dados dos grupos
-    if (data.grupos) {
-      Object.entries(data.grupos).forEach(([k, v]) => {
-        const i = Number(k);
-        if (!gruposData[i]) gruposData[i] = { nome:'', proposta:'', avaliador:'', avaliacao:'' };
-        Object.assign(gruposData[i], v);
-      });
+    if (data) {
+      if (data.numGrupos) {
+        numGrupos = data.numGrupos;
+        document.getElementById('num-grupos-display').textContent = numGrupos;
+      }
+      if (data.grupos) {
+        Object.entries(data.grupos).forEach(([k, v]) => {
+          const i = Number(k);
+          if (!gruposData[i]) gruposData[i] = { nome:'', proposta:'', avaliador:'', avaliacao:'' };
+          Object.assign(gruposData[i], v);
+        });
+      }
     }
     buildGrupos();
     if (meuGrupo) document.getElementById('identity-label').textContent = nomeGrupo(meuGrupo);
-    showSync('✓ Atualizado', 'ok');
+    // mostra modal só na primeira carga, e só se ainda não identificado
+    if (_primeiraVez && !meuGrupo) {
+      _primeiraVez = false;
+      showModal();
+    } else {
+      _primeiraVez = false;
+      showSync('✓ Atualizado', 'ok');
+    }
   });
 }
 
@@ -1085,7 +1100,6 @@ window.saveGrupo = function(i) {
 };
 
 buildGrupos();
-showModal();
 startRemoteListener();
 
 // ══════════ QR CODE ══════════
